@@ -15,7 +15,7 @@ ___
   <tbody>
     <tr>
       <td>
-          <a href="https://mdbootstrap.com/freebies/admin/" alt="Bootstrap 5" rel="dofollow">
+          <a href="https://mdbootstrap.com/freebies/dark-theme/" alt="Bootstrap 5 Dark Theme" rel="dofollow">
           		<img src="https://mdbcdn.b-cdn.net/wp-content/themes/mdbootstrap4/content/en/_mdb5/standard/freebies/dark-theme/assets/featured.jpg">
           </a>
       </td>
