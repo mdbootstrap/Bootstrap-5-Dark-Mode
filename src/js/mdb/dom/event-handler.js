@@ -232,6 +232,29 @@ const EventHandler = {
     addHandler(element, event, handler, delegationFn, true);
   },
 
+  extend(element, events, componentName) {
+    events.forEach((event) => {
+      EventHandler.on(element, `${event.name}.bs.${componentName}`, (e) => {
+        const eventParameters = {};
+        if (event.parametersToCopy) {
+          event.parametersToCopy.forEach((param) => {
+            eventParameters[param] = e[param];
+          });
+        }
+
+        const mdbEvent = EventHandler.trigger(
+          element,
+          `${event.name}.mdb.${componentName}`,
+          eventParameters
+        );
+
+        if (mdbEvent.defaultPrevented) {
+          e.preventDefault();
+        }
+      });
+    });
+  },
+
   off(element, originalTypeEvent, handler, delegationFn) {
     if (typeof originalTypeEvent !== 'string' || !element) {
       return;

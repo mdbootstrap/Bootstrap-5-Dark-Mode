@@ -1,8 +1,8 @@
-import { getjQuery, typeCheckConfig, onDOMContentLoaded } from '../mdb/util/index';
+import { typeCheckConfig } from '../mdb/util/index';
 import EventHandler from '../mdb/dom/event-handler';
-import SelectorEngine from '../mdb/dom/selector-engine';
 import Manipulator from '../mdb/dom/manipulator';
 import BSDropdown from '../bootstrap/mdb-prefix/dropdown';
+import { bindCallbackEventsIfNeeded } from '../autoinit/init';
 
 /**
  * ------------------------------------------------------------------------
@@ -13,8 +13,6 @@ import BSDropdown from '../bootstrap/mdb-prefix/dropdown';
 const NAME = 'dropdown';
 const DATA_KEY = `mdb.${NAME}`;
 const EVENT_KEY = `.${DATA_KEY}`;
-
-const SELECTOR_EXPAND = '[data-mdb-toggle="dropdown"]';
 
 const Default = {
   offset: [0, 2],
@@ -54,7 +52,6 @@ class Dropdown extends BSDropdown {
   constructor(element, data) {
     super(element, data);
     this._config = this._getConfig(data);
-    this._parent = Dropdown.getParentFromElement(this._element);
     this._menuStyle = '';
     this._popperPlacement = '';
     this._mdbPopperConfig = '';
@@ -65,6 +62,8 @@ class Dropdown extends BSDropdown {
     if (this._config.dropdownAnimation === 'on' && !isPrefersReducedMotionSet) {
       this._init();
     }
+    Manipulator.setDataAttribute(this._element, `${this.constructor.NAME}-initialized`, true);
+    bindCallbackEventsIfNeeded(this.constructor);
   }
 
   dispose() {
@@ -72,6 +71,9 @@ class Dropdown extends BSDropdown {
     EventHandler.off(this._parent, EVENT_SHOWN);
     EventHandler.off(this._parent, EVENT_HIDE);
     EventHandler.off(this._parent, EVENT_HIDDEN);
+
+    Manipulator.removeDataAttribute(this._element, `${this.constructor.NAME}-initialized`);
+
     super.dispose();
   }
 
@@ -134,6 +136,7 @@ class Dropdown extends BSDropdown {
 
     // Disable Popper if we have a static display
     if (this._config.display === 'static') {
+      Manipulator.setDataAttribute(this._menu, 'popper', 'static');
       popperConfig.modifiers = [
         {
           name: 'applyStyles',
@@ -153,7 +156,14 @@ class Dropdown extends BSDropdown {
 
   _bindShowEvent() {
     EventHandler.on(this._element, EVENT_SHOW, (e) => {
-      EventHandler.trigger(this._element, EVENT_SHOW_MDB, { relatedTarget: e.relatedTarget });
+      const showEvent = EventHandler.trigger(this._element, EVENT_SHOW_MDB, {
+        relatedTarget: e.relatedTarget,
+      });
+
+      if (showEvent.defaultPrevented) {
+        e.preventDefault();
+        return;
+      }
 
       this._dropdownAnimationStart('show');
     });
@@ -161,13 +171,27 @@ class Dropdown extends BSDropdown {
 
   _bindShownEvent() {
     EventHandler.on(this._parent, EVENT_SHOWN, (e) => {
-      EventHandler.trigger(this._parent, EVENT_SHOWN_MDB, { relatedTarget: e.relatedTarget });
+      const shownEvent = EventHandler.trigger(this._parent, EVENT_SHOWN_MDB, {
+        relatedTarget: e.relatedTarget,
+      });
+
+      if (shownEvent.defaultPrevented) {
+        e.preventDefault();
+        return;
+      }
     });
   }
 
   _bindHideEvent() {
     EventHandler.on(this._parent, EVENT_HIDE, (e) => {
-      EventHandler.trigger(this._parent, EVENT_HIDE_MDB, { relatedTarget: e.relatedTarget });
+      const hideEvent = EventHandler.trigger(this._parent, EVENT_HIDE_MDB, {
+        relatedTarget: e.relatedTarget,
+      });
+
+      if (hideEvent.defaultPrevented) {
+        e.preventDefault();
+        return;
+      }
 
       this._menuStyle = this._menu.style.cssText;
       this._popperPlacement = this._menu.getAttribute('data-popper-placement');
@@ -177,7 +201,14 @@ class Dropdown extends BSDropdown {
 
   _bindHiddenEvent() {
     EventHandler.on(this._parent, EVENT_HIDDEN, (e) => {
-      EventHandler.trigger(this._parent, EVENT_HIDDEN_MDB, { relatedTarget: e.relatedTarget });
+      const hiddenEvent = EventHandler.trigger(this._parent, EVENT_HIDDEN_MDB, {
+        relatedTarget: e.relatedTarget,
+      });
+
+      if (hiddenEvent.defaultPrevented) {
+        e.preventDefault();
+        return;
+      }
 
       if (this._config.display !== 'static' && this._menuStyle !== '') {
         this._menu.style.cssText = this._menuStyle;
@@ -212,39 +243,5 @@ class Dropdown extends BSDropdown {
     });
   }
 }
-
-/**
- * ------------------------------------------------------------------------
- * Data Api implementation - auto initialization
- * ------------------------------------------------------------------------
- */
-
-SelectorEngine.find(SELECTOR_EXPAND).forEach((el) => {
-  let instance = Dropdown.getInstance(el);
-  if (!instance) {
-    instance = new Dropdown(el);
-  }
-});
-
-/**
- * ------------------------------------------------------------------------
- * jQuery
- * ------------------------------------------------------------------------
- * add .rating to jQuery only if jQuery is present
- */
-
-onDOMContentLoaded(() => {
-  const $ = getjQuery();
-
-  if ($) {
-    const JQUERY_NO_CONFLICT = $.fn[NAME];
-    $.fn[NAME] = Dropdown.jQueryInterface;
-    $.fn[NAME].Constructor = Dropdown;
-    $.fn[NAME].noConflict = () => {
-      $.fn[NAME] = JQUERY_NO_CONFLICT;
-      return Dropdown.jQueryInterface;
-    };
-  }
-});
 
 export default Dropdown;

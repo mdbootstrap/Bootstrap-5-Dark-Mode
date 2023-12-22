@@ -1,8 +1,10 @@
-import { getjQuery, element, onDOMContentLoaded } from '../mdb/util/index';
+import { element } from '../mdb/util/index';
 import Data from '../mdb/dom/data';
 import EventHandler from '../mdb/dom/event-handler';
 import Manipulator from '../mdb/dom/manipulator';
 import SelectorEngine from '../mdb/dom/selector-engine';
+import BaseComponent from './base-component';
+import { bindCallbackEventsIfNeeded } from '../autoinit/init';
 
 /**
  * ------------------------------------------------------------------------
@@ -13,12 +15,11 @@ import SelectorEngine from '../mdb/dom/selector-engine';
 const NAME = 'range';
 const DATA_KEY = 'mdb.range';
 const CLASSNAME_THUMB = 'thumb';
-const CLASSNAME_WRAPPER = 'range';
 const CLASSNAME_ACTIVE = 'thumb-active';
 const CLASSNAME_THUMB_VALUE = 'thumb-value';
 
 const SELECTOR_THUMB_VALUE = `.${CLASSNAME_THUMB_VALUE}`;
-const SELECTOR_WRAPPER = `.${CLASSNAME_WRAPPER}`;
+const SELECTOR_THUMB = `.${CLASSNAME_THUMB}`;
 
 /**
  * ------------------------------------------------------------------------
@@ -26,14 +27,17 @@ const SELECTOR_WRAPPER = `.${CLASSNAME_WRAPPER}`;
  * ------------------------------------------------------------------------
  */
 
-class Range {
+class Range extends BaseComponent {
   constructor(element) {
-    this._element = element;
+    super(element);
+
     this._initiated = false;
+    this._thumb = null;
 
     if (this._element) {
-      Data.setData(element, DATA_KEY, this);
       this.init();
+      Manipulator.setDataAttribute(this._element, `${this.constructor.NAME}-initialized`, true);
+      bindCallbackEventsIfNeeded(this.constructor);
     }
   }
 
@@ -52,16 +56,16 @@ class Range {
       return;
     }
     this._addThumb();
-    this._updateValue();
-    this._thumbPositionUpdate();
+    this._thumbUpdate();
     this._handleEvents();
     this._initiated = true;
   }
 
   dispose() {
     this._disposeEvents();
-    Data.removeData(this._element, DATA_KEY);
-    this._element = null;
+    Manipulator.removeDataAttribute(this._element, `${this.constructor.NAME}-initialized`);
+
+    super.dispose();
   }
 
   // Private
@@ -70,12 +74,7 @@ class Range {
     Manipulator.addClass(RANGE_THUMB, CLASSNAME_THUMB);
     RANGE_THUMB.innerHTML = '<span class="thumb-value"></span>';
     this._element.append(RANGE_THUMB);
-  }
-
-  _updateValue() {
-    const thumbValue = SelectorEngine.findOne(SELECTOR_THUMB_VALUE, this._element);
-    thumbValue.textContent = this.rangeInput.value;
-    this.rangeInput.oninput = () => (thumbValue.textContent = this.rangeInput.value);
+    this._thumb = SelectorEngine.findOne(SELECTOR_THUMB, this._element);
   }
 
   _handleEvents() {
@@ -83,40 +82,36 @@ class Range {
     EventHandler.on(this.rangeInput, 'mouseup', () => this._hideThumb());
     EventHandler.on(this.rangeInput, 'touchstart', () => this._showThumb());
     EventHandler.on(this.rangeInput, 'touchend', () => this._hideThumb());
-    EventHandler.on(this.rangeInput, 'input', () => this._thumbPositionUpdate());
+    EventHandler.on(this.rangeInput, 'input', () => this._thumbUpdate());
   }
 
   _disposeEvents() {
-    EventHandler.off(this.rangeInput, 'mousedown', this._showThumb);
-    EventHandler.off(this.rangeInput, 'mouseup', this._hideThumb);
-    EventHandler.off(this.rangeInput, 'touchstart', this._showThumb);
-    EventHandler.off(this.rangeInput, 'touchend', this._hideThumb);
-    EventHandler.off(this.rangeInput, 'input', this._thumbPositionUpdate);
+    EventHandler.off(this.rangeInput, 'mousedown');
+    EventHandler.off(this.rangeInput, 'mouseup');
+    EventHandler.off(this.rangeInput, 'touchstart');
+    EventHandler.off(this.rangeInput, 'touchend');
+    EventHandler.off(this.rangeInput, 'input');
   }
 
   _showThumb() {
-    Manipulator.addClass(this._element.lastElementChild, CLASSNAME_ACTIVE);
+    Manipulator.addClass(this._thumb, CLASSNAME_ACTIVE);
   }
 
   _hideThumb() {
-    Manipulator.removeClass(this._element.lastElementChild, CLASSNAME_ACTIVE);
+    Manipulator.removeClass(this._thumb, CLASSNAME_ACTIVE);
   }
 
-  _thumbPositionUpdate() {
+  _thumbUpdate() {
     const rangeInput = this.rangeInput;
     const inputValue = rangeInput.value;
     const minValue = rangeInput.min ? rangeInput.min : 0;
     const maxValue = rangeInput.max ? rangeInput.max : 100;
-    const thumb = this._element.lastElementChild;
+    const thumbValue = SelectorEngine.findOne(SELECTOR_THUMB_VALUE, this._thumb);
+    thumbValue.textContent = inputValue;
     const newValue = Number(((inputValue - minValue) * 100) / (maxValue - minValue));
-    thumb.firstElementChild.textContent = inputValue;
-    Manipulator.style(thumb, { left: `calc(${newValue}% + (${8 - newValue * 0.15}px))` });
+    Manipulator.style(this._thumb, { left: `calc(${newValue}% + (${8 - newValue * 0.15}px))` });
   }
   // Static
-
-  static getInstance(element) {
-    return Data.getData(element, DATA_KEY);
-  }
 
   static jQueryInterface(config, options) {
     return this.each(function () {
@@ -137,23 +132,5 @@ class Range {
     });
   }
 }
-
-// auto-init
-SelectorEngine.find(SELECTOR_WRAPPER).map((element) => new Range(element));
-
-// jQuery init
-onDOMContentLoaded(() => {
-  const $ = getjQuery();
-
-  if ($) {
-    const JQUERY_NO_CONFLICT = $.fn[NAME];
-    $.fn[NAME] = Range.jQueryInterface;
-    $.fn[NAME].Constructor = Range;
-    $.fn[NAME].noConflict = () => {
-      $.fn[NAME] = JQUERY_NO_CONFLICT;
-      return Range.jQueryInterface;
-    };
-  }
-});
 
 export default Range;

@@ -1,7 +1,11 @@
-// Colors
+//
+// Color styles
+//
 
 @each $color, $value in $theme-colors {
   .bg-#{$color} {
-    background-color: $value !important;
+    --#{$prefix}-bg-opacity: 1;
+
+    background-color: rgba($value, var(--#{$prefix}-bg-opacity));
   }
 }

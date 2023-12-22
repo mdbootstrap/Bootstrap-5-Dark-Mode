@@ -23,7 +23,9 @@
 // null by default, thus nothing is generated.
 
 :root {
-  font-size: $font-size-root;
+  @if $font-size-root != null {
+    @include font-size(var(--#{$prefix}root-font-size));
+  }
 
   @if $enable-smooth-scroll {
     @media (prefers-reduced-motion: no-preference) {
@@ -39,47 +41,31 @@
 // 3. Prevent adjustments of font size after orientation changes in iOS.
 // 4. Change the default tap highlight to be completely transparent in iOS.
 
+// scss-docs-start reboot-body-rules
 body {
   margin: 0; // 1
-  font-family: $font-family-base;
-  @include font-size($font-size-base);
-  font-weight: $font-weight-base;
-  line-height: $line-height-base;
-  color: $body-color;
-  text-align: $body-text-align;
-  background-color: $body-bg; // 2
+  font-family: var(--#{$prefix}body-font-family);
+  @include font-size(var(--#{$prefix}body-font-size));
+  font-weight: var(--#{$prefix}body-font-weight);
+  line-height: var(--#{$prefix}body-line-height);
+  color: var(--#{$prefix}body-color);
+  text-align: var(--#{$prefix}body-text-align);
+  background-color: var(--#{$prefix}body-bg); // 2
   -webkit-text-size-adjust: 100%; // 3
   -webkit-tap-highlight-color: rgba($black, 0); // 4
 }
-
-// Future-proof rule: in browsers that support :focus-visible, suppress the focus outline
-// on elements that programmatically receive focus but wouldn't normally show a visible
-// focus outline. In general, this would mean that the outline is only applied if the
-// interaction that led to the element receiving programmatic focus was a keyboard interaction,
-// or the browser has somehow determined that the user is primarily a keyboard user and/or
-// wants focus outlines to always be presented.
-// See https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible
-// and https://developer.paciellogroup.com/blog/2018/03/focus-visible-and-backwards-compatibility/
-
-[tabindex='-1']:focus:not(:focus-visible) {
-  outline: 0 !important;
-}
+// scss-docs-end reboot-body-rules
 
 // Content grouping
 //
 // 1. Reset Firefox's gray color
-// 2. Set correct height and prevent the `size` attribute to make the `hr` look like an input field
 
 hr {
   margin: $hr-margin-y 0;
   color: $hr-color; // 1
-  background-color: currentColor;
   border: 0;
+  border-top: $hr-border-width solid $hr-border-color;
   opacity: $hr-opacity;
-}
-
-hr:not([size]) {
-  height: $hr-height; // 2
 }
 
 // Typography
@@ -95,7 +81,7 @@ hr:not([size]) {
   font-style: $headings-font-style;
   font-weight: $headings-font-weight;
   line-height: $headings-line-height;
-  color: $headings-color;
+  color: var(--#{$prefix}heading-color);
 }
 
 h1 {
@@ -140,18 +126,14 @@ p {
 
 // Abbreviations
 //
-// 1. Duplicate behavior to the data-mdb-* attribute for our tooltip plugin
-// 2. Add the correct text decoration in Chrome, Edge, Opera, and Safari.
-// 3. Add explicit cursor to indicate changed behavior.
-// 4. Prevent the text-decoration to be skipped.
+// 1. Add the correct text decoration in Chrome, Edge, Opera, and Safari.
+// 2. Add explicit cursor to indicate changed behavior.
+// 3. Prevent the text-decoration to be skipped.
 
-abbr[title],
-abbr[data-mdb-original-title] {
-  // 1
-  text-decoration: underline; // 2
-  text-decoration: underline dotted; // 2
-  cursor: help; // 3
-  text-decoration-skip-ink: none; // 4
+abbr[title] {
+  text-decoration: underline dotted; // 1
+  cursor: help; // 2
+  text-decoration-skip-ink: none; // 3
 }
 
 // Address
@@ -221,7 +203,8 @@ small {
 
 mark {
   padding: $mark-padding;
-  background-color: $mark-bg;
+  color: var(--#{$prefix}highlight-color);
+  background-color: var(--#{$prefix}highlight-bg);
 }
 
 // Sub and Sup
@@ -247,11 +230,11 @@ sup {
 // Links
 
 a {
-  color: $link-color;
+  color: rgba(var(--#{$prefix}link-color-rgb), var(--#{$prefix}link-opacity, 1));
   text-decoration: $link-decoration;
 
   &:hover {
-    color: $link-hover-color;
+    --#{$prefix}link-color-rgb: var(--#{$prefix}link-hover-color-rgb);
     text-decoration: $link-hover-decoration;
   }
 }
@@ -277,9 +260,6 @@ kbd,
 samp {
   font-family: $font-family-code;
   @include font-size(1em); // Correct the odd `em` font sizing in all browsers.
-  /*!rtl:ignore*/
-  direction: ltr;
-  unicode-bidi: bidi-override;
 }
 
 // 1. Remove browser default top margin
@@ -304,7 +284,7 @@ pre {
 
 code {
   @include font-size($code-font-size);
-  color: $code-color;
+  color: var(--#{$prefix}code-color);
   word-wrap: break-word;
 
   // Streamline the style when inside anchors to avoid broken underline and more
@@ -418,12 +398,10 @@ textarea {
 }
 
 // Remove the inheritance of text transform in Firefox
-
 button,
 select {
   text-transform: none;
 }
-
 // Set the cursor for non-`<button>` buttons
 //
 // Details at https://github.com/twbs/bootstrap/pull/30562
@@ -431,18 +409,24 @@ select {
   cursor: pointer;
 }
 
-// Remove the inheritance of word-wrap in Safari.
-// See https://github.com/twbs/bootstrap/issues/24990
-
 select {
+  // Remove the inheritance of word-wrap in Safari.
+  // See https://github.com/twbs/bootstrap/issues/24990
   word-wrap: normal;
+
+  // Undo the opacity change from Chrome
+  &:disabled {
+    opacity: 1;
+  }
 }
 
-// Remove the dropdown arrow in Chrome from inputs built with datalists.
+// Remove the dropdown arrow only from text type inputs built with datalists in Chrome.
 // See https://stackoverflow.com/a/54997118
 
-[list]::-webkit-calendar-picker-indicator {
-  display: none;
+[list]:not([type='date']):not([type='datetime-local']):not([type='month']):not([type='week']):not(
+    [type='time']
+  )::-webkit-calendar-picker-indicator {
+  display: none !important;
 }
 
 // 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
@@ -526,15 +510,15 @@ legend {
   height: auto;
 }
 
-// 1. Correct the outline style in Safari.
-// 2. This overrides the extra rounded corners on search inputs in iOS so that our
+// 1. This overrides the extra rounded corners on search inputs in iOS so that our
 //    `.form-control` class can properly style them. Note that this cannot simply
 //    be added to `.form-control` as it's not specific enough. For details, see
 //    https://github.com/twbs/bootstrap/issues/11586.
+// 2. Correct the outline style in Safari.
 
 [type='search'] {
-  outline-offset: -2px; // 1
-  -webkit-appearance: textfield; // 2
+  -webkit-appearance: textfield; // 1
+  outline-offset: -2px; // 2
 }
 
 // 1. A few input types should stay LTR
@@ -542,7 +526,7 @@ legend {
 // 2. RTL only output
 // See https://rtlcss.com/learn/usage-guide/control-directives/#raw
 
-/*!rtl:raw:
+/* rtl:raw:
 [type="tel"],
 [type="url"],
 [type="email"],
@@ -563,17 +547,10 @@ legend {
   padding: 0;
 }
 
-// Inherit font family and line height for file input buttons
-
-// stylelint-disable-next-line selector-pseudo-element-no-unknown
-::file-selector-button {
-  font: inherit;
-}
-
-// 1. Change font properties to `inherit`
+// 1. Inherit font family and line height for file input buttons
 // 2. Correct the inability to style clickable types in iOS and Safari.
 
-::-webkit-file-upload-button {
+::file-selector-button {
   font: inherit; // 1
   -webkit-appearance: button; // 2
 }

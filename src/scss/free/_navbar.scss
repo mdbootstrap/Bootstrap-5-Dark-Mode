@@ -1,8 +1,14 @@
-// Navbar
+//
+// Navbar styles
+//
 
 .navbar {
-  box-shadow: $navbar-box-shadow;
-  padding-top: $navbar-padding-top;
+  --#{$prefix}navbar-box-shadow: #{$navbar-box-shadow};
+  --#{$prefix}navbar-padding-top: #{$navbar-padding-top};
+  --#{$prefix}navbar-brand-img-margin-right: #{$navbar-brand-img-margin-right};
+
+  box-shadow: var(--#{$prefix}navbar-box-shadow);
+  padding-top: var(--#{$prefix}navbar-padding-top);
 }
 
 .navbar-toggler {
@@ -22,7 +28,7 @@
   display: flex;
   align-items: center;
   img {
-    margin-right: $navbar-brand-img-margin-right;
+    margin-right: var(--#{$prefix}navbar-brand-img-margin-right);
   }
 }
 
@@ -30,6 +36,7 @@
   position: absolute;
 }
 
+// Navbar themes
 .navbar-light {
   .navbar-toggler-icon {
     background-image: none;
@@ -40,4 +47,18 @@
   .navbar-toggler-icon {
     background-image: none;
   }
+}
+
+.navbar-dark,
+.navbar[data-mdb-theme='dark'] {
+  // scss-docs-start navbar-dark-css-vars
+  --#{$prefix}navbar-color: #{$navbar-dark-color};
+  --#{$prefix}navbar-hover-color: #{$navbar-dark-hover-color};
+  --#{$prefix}navbar-disabled-color: #{$navbar-dark-disabled-color};
+  --#{$prefix}navbar-active-color: #{$navbar-dark-active-color};
+  --#{$prefix}navbar-brand-color: #{$navbar-dark-brand-color};
+  --#{$prefix}navbar-brand-hover-color: #{$navbar-dark-brand-hover-color};
+  --#{$prefix}navbar-toggler-border-color: #{$navbar-dark-toggler-border-color};
+  --#{$prefix}navbar-toggler-icon-bg: #{escape-svg($navbar-dark-toggler-icon-bg)};
+  // scss-docs-end navbar-dark-css-vars
 }

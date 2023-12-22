@@ -3,6 +3,8 @@
 //
 
 .input-group {
+  flex-wrap: nowrap;
+
   > .form-control {
     min-height: $input-group-min-height;
     height: $input-group-height;
@@ -23,6 +25,13 @@
   background-color: transparent;
   padding-top: $input-group-text-padding-y;
   padding-bottom: $input-group-text-padding-y;
+  > .form-check-input[type='checkbox'] {
+    margin-left: 1px;
+    margin-right: 1px;
+  }
+  > .form-check-input[type='radio'] {
+    margin-right: 0;
+  }
 }
 
 .input-group-lg {
@@ -65,12 +74,16 @@
     }
   }
   .form-outline:not(:first-child),
-  .form-outline:not(:first-child) .form-notch-leading {
+  .select-wrapper:not(:first-child),
+  .form-outline:not(:first-child) .form-notch-leading,
+  .select-wrapper:not(:first-child) .form-notch-leading {
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
   }
   .form-outline:not(:last-child),
-  .form-outline:not(:last-child) .form-notch-trailing {
+  .select-wrapper:not(:last-child),
+  .form-outline:not(:last-child) .form-notch-trailing,
+  .select-wrapper:not(:last-child) .form-notch-trailing {
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
   }
@@ -78,4 +91,37 @@
 
 .input-group > [class*='btn-outline-'] + [class*='btn-outline-'] {
   border-left: 0;
+}
+
+.input-group > .btn[class*='btn-outline-'] {
+  padding-top: 0.47rem;
+}
+
+.input-group > .btn {
+  padding-top: 0.59rem;
+}
+
+.input-group {
+  &.input-group-lg {
+    .input-group-text {
+      height: $input-group-lg-height;
+    }
+  }
+}
+
+.input-group {
+  .input-group-text {
+    height: $input-group-height;
+  }
+  .btn {
+    line-height: 1;
+  }
+}
+
+.input-group {
+  &.input-group-sm {
+    .input-group-text {
+      height: $input-group-sm-height;
+    }
+  }
 }

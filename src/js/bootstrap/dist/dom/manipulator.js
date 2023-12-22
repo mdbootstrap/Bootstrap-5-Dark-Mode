@@ -1,6 +1,6 @@
 /*!
- * Bootstrap manipulator.js v5.0.0-beta2 (https://getbootstrap.com/)
- * Copyright 2011-2021 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+ * Bootstrap manipulator.js v5.3.2 (https://getbootstrap.com/)
+ * Copyright 2011-2023 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 (function (global, factory) {
@@ -15,75 +15,60 @@
 
   /**
    * --------------------------------------------------------------------------
-   * Bootstrap (v5.0.0-beta2): dom/manipulator.js
+   * Bootstrap dom/manipulator.js
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
    * --------------------------------------------------------------------------
    */
-  function normalizeData(val) {
-    if (val === 'true') {
+
+  function normalizeData(value) {
+    if (value === 'true') {
       return true;
     }
-
-    if (val === 'false') {
+    if (value === 'false') {
       return false;
     }
-
-    if (val === Number(val).toString()) {
-      return Number(val);
+    if (value === Number(value).toString()) {
+      return Number(value);
     }
-
-    if (val === '' || val === 'null') {
+    if (value === '' || value === 'null') {
       return null;
     }
-
-    return val;
+    if (typeof value !== 'string') {
+      return value;
+    }
+    try {
+      return JSON.parse(decodeURIComponent(value));
+    } catch (_unused) {
+      return value;
+    }
   }
-
   function normalizeDataKey(key) {
-    return key.replace(/[A-Z]/g, function (chr) {
-      return '-' + chr.toLowerCase();
-    });
+    return key.replace(/[A-Z]/g, (chr) => `-${chr.toLowerCase()}`);
   }
-
-  var Manipulator = {
-    setDataAttribute: function setDataAttribute(element, key, value) {
-      element.setAttribute('data-bs-' + normalizeDataKey(key), value);
+  const Manipulator = {
+    setDataAttribute(element, key, value) {
+      element.setAttribute(`data-bs-${normalizeDataKey(key)}`, value);
     },
-    removeDataAttribute: function removeDataAttribute(element, key) {
-      element.removeAttribute('data-bs-' + normalizeDataKey(key));
+    removeDataAttribute(element, key) {
+      element.removeAttribute(`data-bs-${normalizeDataKey(key)}`);
     },
-    getDataAttributes: function getDataAttributes(element) {
+    getDataAttributes(element) {
       if (!element) {
         return {};
       }
-
-      var attributes = {};
-      Object.keys(element.dataset)
-        .filter(function (key) {
-          return key.startsWith('bs');
-        })
-        .forEach(function (key) {
-          var pureKey = key.replace(/^bs/, '');
-          pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length);
-          attributes[pureKey] = normalizeData(element.dataset[key]);
-        });
+      const attributes = {};
+      const bsKeys = Object.keys(element.dataset).filter(
+        (key) => key.startsWith('bs') && !key.startsWith('bsConfig')
+      );
+      for (const key of bsKeys) {
+        let pureKey = key.replace(/^bs/, '');
+        pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length);
+        attributes[pureKey] = normalizeData(element.dataset[key]);
+      }
       return attributes;
     },
-    getDataAttribute: function getDataAttribute(element, key) {
-      return normalizeData(element.getAttribute('data-bs-' + normalizeDataKey(key)));
-    },
-    offset: function offset(element) {
-      var rect = element.getBoundingClientRect();
-      return {
-        top: rect.top + document.body.scrollTop,
-        left: rect.left + document.body.scrollLeft,
-      };
-    },
-    position: function position(element) {
-      return {
-        top: element.offsetTop,
-        left: element.offsetLeft,
-      };
+    getDataAttribute(element, key) {
+      return normalizeData(element.getAttribute(`data-bs-${normalizeDataKey(key)}`));
     },
   };
 

@@ -1,8 +1,8 @@
-import { getjQuery, getElementFromSelector, onDOMContentLoaded } from '../mdb/util/index';
+import { getElementFromSelector } from '../mdb/util/index';
 import EventHandler from '../mdb/dom/event-handler';
-import SelectorEngine from '../mdb/dom/selector-engine';
 import BSTab from '../bootstrap/mdb-prefix/tab';
-
+import Manipulator from '../mdb/dom/manipulator';
+import { bindCallbackEventsIfNeeded } from '../autoinit/init';
 /**
  * ------------------------------------------------------------------------
  * Constants
@@ -24,28 +24,21 @@ const EVENT_HIDE = `hide${EVENT_KEY}`;
 const EVENT_HIDDEN = `hidden${EVENT_KEY}`;
 
 const CLASS_NAME_ACTIVE = 'active';
-const CLASS_NAME_DISABLED = 'disabled';
-
-const SELECTOR_NAV_LIST_GROUP = '.nav, .list-group';
-
-const SELECTOR_ACTIVE = '.active';
-const SELECTOR_ACTIVE_UL = ':scope > li > .active';
-
-const SELECTOR_DATA_TOGGLE =
-  '[data-mdb-toggle="tab"], [data-mdb-toggle="pill"], [data-mdb-toggle="list"]';
+const CLASS_NAME_FADE = 'fade';
+const CLASS_NAME_SHOW = 'show';
 
 class Tab extends BSTab {
   constructor(element) {
     super(element);
 
-    this._previous = null;
-
-    this._init();
+    Manipulator.setDataAttribute(this._element, `${this.constructor.NAME}-initialized`, true);
+    bindCallbackEventsIfNeeded(this.constructor);
   }
 
   dispose() {
     EventHandler.off(this._element, EVENT_SHOW_BS);
     EventHandler.off(this._element, EVENT_SHOWN_BS);
+    Manipulator.removeDataAttribute(this._element, `${this.constructor.NAME}-initialized`);
 
     super.dispose();
   }
@@ -57,142 +50,94 @@ class Tab extends BSTab {
 
   // Override
   show() {
-    if (
-      (this._element.parentNode &&
-        this._element.parentNode.nodeType === Node.ELEMENT_NODE &&
-        this._element.classList.contains(CLASS_NAME_ACTIVE)) ||
-      this._element.classList.contains(CLASS_NAME_DISABLED)
-    ) {
+    // Shows this elem and deactivate the active sibling if exists
+    const innerElem = this._element;
+    if (this._elemIsActive(innerElem)) {
       return;
     }
 
-    const target = getElementFromSelector(this._element);
-    const listElement = this._element.closest(SELECTOR_NAV_LIST_GROUP);
-
-    if (listElement) {
-      const itemSelector =
-        listElement.nodeName === 'UL' || listElement.nodeName === 'OL'
-          ? SELECTOR_ACTIVE_UL
-          : SELECTOR_ACTIVE;
-      this._previous = SelectorEngine.find(itemSelector, listElement);
-      this._previous = this._previous[this._previous.length - 1];
-    }
+    // Search for active tab on same parent to deactivate it
+    const active = this._getActiveElem();
 
     let hideEvent = null;
     let hideEventMdb = null;
 
-    if (this._previous) {
-      hideEvent = EventHandler.trigger(this._previous, EVENT_HIDE_BS, {
-        relatedTarget: this._element,
-      });
-      hideEventMdb = EventHandler.trigger(this._previous, EVENT_HIDE, {
-        relatedTarget: this._element,
-      });
+    if (active) {
+      hideEvent = EventHandler.trigger(active, EVENT_HIDE_BS, { relatedTarget: innerElem });
+      hideEventMdb = EventHandler.trigger(active, EVENT_HIDE, { relatedTarget: innerElem });
     }
 
-    const showEvent = EventHandler.trigger(this._element, EVENT_SHOW_BS, {
-      relatedTarget: this._previous,
-    });
+    const showEvent = EventHandler.trigger(innerElem, EVENT_SHOW_BS, { relatedTarget: active });
+    const showEventMdb = EventHandler.trigger(innerElem, EVENT_SHOW, { relatedTarget: active });
 
     if (
       showEvent.defaultPrevented ||
-      (hideEvent !== null && hideEvent.defaultPrevented) ||
-      (hideEventMdb !== null && hideEventMdb.defaultPrevented)
+      showEventMdb.defaultPrevented ||
+      (hideEvent && hideEvent.defaultPrevented) ||
+      (hideEventMdb && hideEventMdb.defaultPrevented)
     ) {
       return;
     }
 
-    this._activate(this._element, listElement);
+    this._deactivate(active, innerElem);
+    this._activate(innerElem, active);
+  }
+
+  _activate(element, relatedElem) {
+    if (!element) {
+      return;
+    }
+
+    element.classList.add(CLASS_NAME_ACTIVE);
+
+    this._activate(getElementFromSelector(element)); // Search and activate/show the proper section
 
     const complete = () => {
-      EventHandler.trigger(this._previous, EVENT_HIDDEN_BS, {
-        relatedTarget: this._element,
-      });
-      EventHandler.trigger(this._previous, EVENT_HIDDEN, {
-        relatedTarget: this._element,
-      });
+      if (element.getAttribute('role') !== 'tab') {
+        element.classList.add(CLASS_NAME_SHOW);
+        return;
+      }
 
-      EventHandler.trigger(this._element, EVENT_SHOWN_BS, {
-        relatedTarget: this._previous,
+      element.focus();
+      element.removeAttribute('tabindex');
+      element.setAttribute('aria-selected', true);
+      this._toggleDropDown(element, true);
+      EventHandler.trigger(element, EVENT_SHOWN_BS, {
+        relatedTarget: relatedElem,
+      });
+      EventHandler.trigger(element, EVENT_SHOWN, {
+        relatedTarget: relatedElem,
       });
     };
 
-    if (target) {
-      this._activate(target, target.parentNode, complete);
-    } else {
-      complete();
+    this._queueCallback(complete, element, element.classList.contains(CLASS_NAME_FADE));
+  }
+
+  _deactivate(element, relatedElem) {
+    if (!element) {
+      return;
     }
-  }
 
-  // Private
-  _init() {
-    this._bindShowEvent();
-    this._bindShownEvent();
-    this._bindHideEvent();
-    this._bindHiddenEvent();
-  }
+    element.classList.remove(CLASS_NAME_ACTIVE);
+    element.blur();
 
-  _bindShowEvent() {
-    EventHandler.on(this._element, EVENT_SHOW_BS, (e) => {
-      EventHandler.trigger(this._element, EVENT_SHOW, {
-        relatedTarget: e.relatedTarget,
-      });
-    });
-  }
+    this._deactivate(getElementFromSelector(element)); // Search and deactivate the shown section too
 
-  _bindShownEvent() {
-    EventHandler.on(this._element, EVENT_SHOWN_BS, (e) => {
-      EventHandler.trigger(this._element, EVENT_SHOWN, {
-        relatedTarget: e.relatedTarget,
-      });
-    });
-  }
+    const complete = () => {
+      if (element.getAttribute('role') !== 'tab') {
+        element.classList.remove(CLASS_NAME_SHOW);
+        return;
+      }
 
-  _bindHideEvent() {
-    EventHandler.on(this._previous, EVENT_HIDE_BS, () => {
-      EventHandler.trigger(this._previous, EVENT_HIDE);
-    });
-  }
+      element.setAttribute('aria-selected', false);
+      element.setAttribute('tabindex', '-1');
+      this._toggleDropDown(element, false);
+      EventHandler.trigger(element, EVENT_HIDDEN_BS, { relatedTarget: relatedElem });
+      EventHandler.trigger(element, EVENT_HIDDEN, { relatedTarget: relatedElem });
+    };
 
-  _bindHiddenEvent() {
-    EventHandler.on(this._previous, EVENT_HIDDEN_BS, () => {
-      EventHandler.trigger(this._previous, EVENT_HIDDEN);
-    });
+    this._queueCallback(complete, element, element.classList.contains(CLASS_NAME_FADE));
   }
 }
-
-/**
- * ------------------------------------------------------------------------
- * Data Api implementation - auto initialization
- * ------------------------------------------------------------------------
- */
-
-SelectorEngine.find(SELECTOR_DATA_TOGGLE).forEach((el) => {
-  let instance = Tab.getInstance(el);
-  if (!instance) {
-    instance = new Tab(el);
-  }
-});
-
-/**
- * ------------------------------------------------------------------------
- * jQuery
- * ------------------------------------------------------------------------
- * add .rating to jQuery only if jQuery is present
- */
-
-onDOMContentLoaded(() => {
-  const $ = getjQuery();
-
-  if ($) {
-    const JQUERY_NO_CONFLICT = $.fn[NAME];
-    $.fn[NAME] = Tab.jQueryInterface;
-    $.fn[NAME].Constructor = Tab;
-    $.fn[NAME].noConflict = () => {
-      $.fn[NAME] = JQUERY_NO_CONFLICT;
-      return Tab.jQueryInterface;
-    };
-  }
-});
 
 export default Tab;

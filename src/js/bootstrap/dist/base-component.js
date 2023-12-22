@@ -1,81 +1,97 @@
 /*!
- * Bootstrap base-component.js v5.0.0-beta2 (https://getbootstrap.com/)
- * Copyright 2011-2021 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+ * Bootstrap base-component.js v5.3.2 (https://getbootstrap.com/)
+ * Copyright 2011-2023 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined'
-    ? (module.exports = factory(require('./dom/data.js')))
+    ? (module.exports = factory(
+        require('./dom/data.js'),
+        require('./dom/event-handler.js'),
+        require('./util/config.js'),
+        require('./util/index.js')
+      ))
     : typeof define === 'function' && define.amd
-    ? define(['./dom/data'], factory)
+    ? define(['./dom/data', './dom/event-handler', './util/config', './util/index'], factory)
     : ((global = typeof globalThis !== 'undefined' ? globalThis : global || self),
-      (global.Base = factory(global.Data)));
-})(this, function (Data) {
+      (global.BaseComponent = factory(
+        global.Data,
+        global.EventHandler,
+        global.Config,
+        global.Index
+      )));
+})(this, function (Data, EventHandler, Config, index_js) {
   'use strict';
 
-  function _interopDefaultLegacy(e) {
-    return e && typeof e === 'object' && 'default' in e ? e : { default: e };
-  }
-
-  var Data__default = /*#__PURE__*/ _interopDefaultLegacy(Data);
-
-  function _defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ('value' in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  function _createClass(Constructor, protoProps, staticProps) {
-    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) _defineProperties(Constructor, staticProps);
-    return Constructor;
-  }
-
   /**
-   * ------------------------------------------------------------------------
-   * Constants
-   * ------------------------------------------------------------------------
+   * --------------------------------------------------------------------------
+   * Bootstrap base-component.js
+   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
+   * --------------------------------------------------------------------------
    */
 
-  var VERSION = '5.0.0-beta2';
+  /**
+   * Constants
+   */
 
-  var BaseComponent = /*#__PURE__*/ (function () {
-    function BaseComponent(element) {
+  const VERSION = '5.3.2';
+
+  /**
+   * Class definition
+   */
+
+  class BaseComponent extends Config {
+    constructor(element, config) {
+      super();
+      element = index_js.getElement(element);
       if (!element) {
         return;
       }
-
       this._element = element;
-      Data__default['default'].setData(element, this.constructor.DATA_KEY, this);
+      this._config = this._getConfig(config);
+      Data.set(this._element, this.constructor.DATA_KEY, this);
     }
 
-    var _proto = BaseComponent.prototype;
+    // Public
+    dispose() {
+      Data.remove(this._element, this.constructor.DATA_KEY);
+      EventHandler.off(this._element, this.constructor.EVENT_KEY);
+      for (const propertyName of Object.getOwnPropertyNames(this)) {
+        this[propertyName] = null;
+      }
+    }
+    _queueCallback(callback, element, isAnimated = true) {
+      index_js.executeAfterTransition(callback, element, isAnimated);
+    }
+    _getConfig(config) {
+      config = this._mergeConfigObj(config, this._element);
+      config = this._configAfterMerge(config);
+      this._typeCheckConfig(config);
+      return config;
+    }
 
-    _proto.dispose = function dispose() {
-      Data__default['default'].removeData(this._element, this.constructor.DATA_KEY);
-      this._element = null;
-    };
-    /** Static */
-
-    BaseComponent.getInstance = function getInstance(element) {
-      return Data__default['default'].getData(element, this.DATA_KEY);
-    };
-
-    _createClass(BaseComponent, null, [
-      {
-        key: 'VERSION',
-        get: function get() {
-          return VERSION;
-        },
-      },
-    ]);
-
-    return BaseComponent;
-  })();
+    // Static
+    static getInstance(element) {
+      return Data.get(index_js.getElement(element), this.DATA_KEY);
+    }
+    static getOrCreateInstance(element, config = {}) {
+      return (
+        this.getInstance(element) || new this(element, typeof config === 'object' ? config : null)
+      );
+    }
+    static get VERSION() {
+      return VERSION;
+    }
+    static get DATA_KEY() {
+      return `bs.${this.NAME}`;
+    }
+    static get EVENT_KEY() {
+      return `.${this.DATA_KEY}`;
+    }
+    static eventName(name) {
+      return `${name}${this.EVENT_KEY}`;
+    }
+  }
 
   return BaseComponent;
 });

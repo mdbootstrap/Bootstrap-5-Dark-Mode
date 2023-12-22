@@ -1,31 +1,29 @@
 /**
  * --------------------------------------------------------------------------
- * Bootstrap (v5.0.0-beta2): dropdown.js
+ * Bootstrap dropdown.js
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  * --------------------------------------------------------------------------
  */
 
 import * as Popper from '@popperjs/core';
-
+import BaseComponent from './base-component.js';
+import EventHandler from './dom/event-handler.js';
+import Manipulator from './dom/manipulator.js';
+import SelectorEngine from './dom/selector-engine.js';
 import {
   defineJQueryPlugin,
-  getElementFromSelector,
+  execute,
+  getElement,
+  getNextActiveElement,
+  isDisabled,
   isElement,
-  isVisible,
   isRTL,
+  isVisible,
   noop,
-  typeCheckConfig,
-} from './util/index';
-import Data from './dom/data';
-import EventHandler from './dom/event-handler';
-import Manipulator from './dom/manipulator';
-import SelectorEngine from './dom/selector-engine';
-import BaseComponent from './base-component';
+} from './util/index.js';
 
 /**
- * ------------------------------------------------------------------------
  * Constants
- * ------------------------------------------------------------------------
  */
 
 const NAME = 'dropdown';
@@ -34,81 +32,79 @@ const EVENT_KEY = `.${DATA_KEY}`;
 const DATA_API_KEY = '.data-api';
 
 const ESCAPE_KEY = 'Escape';
-const SPACE_KEY = 'Space';
 const TAB_KEY = 'Tab';
 const ARROW_UP_KEY = 'ArrowUp';
 const ARROW_DOWN_KEY = 'ArrowDown';
 const RIGHT_MOUSE_BUTTON = 2; // MouseEvent.button value for the secondary button, usually the right button
 
-const REGEXP_KEYDOWN = new RegExp(`${ARROW_UP_KEY}|${ARROW_DOWN_KEY}|${ESCAPE_KEY}`);
-
 const EVENT_HIDE = `hide${EVENT_KEY}`;
 const EVENT_HIDDEN = `hidden${EVENT_KEY}`;
 const EVENT_SHOW = `show${EVENT_KEY}`;
 const EVENT_SHOWN = `shown${EVENT_KEY}`;
-const EVENT_CLICK = `click${EVENT_KEY}`;
 const EVENT_CLICK_DATA_API = `click${EVENT_KEY}${DATA_API_KEY}`;
 const EVENT_KEYDOWN_DATA_API = `keydown${EVENT_KEY}${DATA_API_KEY}`;
 const EVENT_KEYUP_DATA_API = `keyup${EVENT_KEY}${DATA_API_KEY}`;
 
-const CLASS_NAME_DISABLED = 'disabled';
 const CLASS_NAME_SHOW = 'show';
 const CLASS_NAME_DROPUP = 'dropup';
 const CLASS_NAME_DROPEND = 'dropend';
 const CLASS_NAME_DROPSTART = 'dropstart';
-const CLASS_NAME_NAVBAR = 'navbar';
+const CLASS_NAME_DROPUP_CENTER = 'dropup-center';
+const CLASS_NAME_DROPDOWN_CENTER = 'dropdown-center';
 
-const SELECTOR_DATA_TOGGLE = '[data-mdb-toggle="dropdown"]';
-const SELECTOR_FORM_CHILD = '.dropdown form';
+const SELECTOR_DATA_TOGGLE = '[data-mdb-dropdown-initialized]:not(.disabled):not(:disabled)';
+const SELECTOR_DATA_TOGGLE_SHOWN = `${SELECTOR_DATA_TOGGLE}.${CLASS_NAME_SHOW}`;
 const SELECTOR_MENU = '.dropdown-menu';
+const SELECTOR_NAVBAR = '.navbar';
 const SELECTOR_NAVBAR_NAV = '.navbar-nav';
 const SELECTOR_VISIBLE_ITEMS = '.dropdown-menu .dropdown-item:not(.disabled):not(:disabled)';
 
-const PLACEMENT_TOP = isRTL ? 'top-end' : 'top-start';
-const PLACEMENT_TOPEND = isRTL ? 'top-start' : 'top-end';
-const PLACEMENT_BOTTOM = isRTL ? 'bottom-end' : 'bottom-start';
-const PLACEMENT_BOTTOMEND = isRTL ? 'bottom-start' : 'bottom-end';
-const PLACEMENT_RIGHT = isRTL ? 'left-start' : 'right-start';
-const PLACEMENT_LEFT = isRTL ? 'right-start' : 'left-start';
+const PLACEMENT_TOP = isRTL() ? 'top-end' : 'top-start';
+const PLACEMENT_TOPEND = isRTL() ? 'top-start' : 'top-end';
+const PLACEMENT_BOTTOM = isRTL() ? 'bottom-end' : 'bottom-start';
+const PLACEMENT_BOTTOMEND = isRTL() ? 'bottom-start' : 'bottom-end';
+const PLACEMENT_RIGHT = isRTL() ? 'left-start' : 'right-start';
+const PLACEMENT_LEFT = isRTL() ? 'right-start' : 'left-start';
+const PLACEMENT_TOPCENTER = 'top';
+const PLACEMENT_BOTTOMCENTER = 'bottom';
 
 const Default = {
-  offset: [0, 2],
-  flip: true,
+  autoClose: true,
   boundary: 'clippingParents',
-  reference: 'toggle',
   display: 'dynamic',
+  offset: [0, 2],
   popperConfig: null,
+  reference: 'toggle',
 };
 
 const DefaultType = {
-  offset: '(array|string|function)',
-  flip: 'boolean',
+  autoClose: '(boolean|string)',
   boundary: '(string|element)',
-  reference: '(string|element|object)',
   display: 'string',
+  offset: '(array|string|function)',
   popperConfig: '(null|object|function)',
+  reference: '(string|element|object)',
 };
 
 /**
- * ------------------------------------------------------------------------
- * Class Definition
- * ------------------------------------------------------------------------
+ * Class definition
  */
 
 class Dropdown extends BaseComponent {
   constructor(element, config) {
-    super(element);
+    super(element, config);
 
     this._popper = null;
-    this._config = this._getConfig(config);
-    this._menu = this._getMenuElement();
+    this._parent = this._element.parentNode; // dropdown wrapper
+    // TODO: v6 revert #37011 & change markup https://getbootstrap.com/docs/5.3/forms/input-group/
+    this._menu =
+      SelectorEngine.next(this._element, SELECTOR_MENU)[0] ||
+      SelectorEngine.prev(this._element, SELECTOR_MENU)[0] ||
+      SelectorEngine.findOne(SELECTOR_MENU, this._parent);
     this._inNavbar = this._detectNavbar();
-
-    this._addEventListeners();
   }
 
   // Getters
-
   static get Default() {
     return Default;
   }
@@ -117,38 +113,20 @@ class Dropdown extends BaseComponent {
     return DefaultType;
   }
 
-  static get DATA_KEY() {
-    return DATA_KEY;
+  static get NAME() {
+    return NAME;
   }
 
   // Public
-
   toggle() {
-    if (this._element.disabled || this._element.classList.contains(CLASS_NAME_DISABLED)) {
-      return;
-    }
-
-    const isActive = this._element.classList.contains(CLASS_NAME_SHOW);
-
-    Dropdown.clearMenus();
-
-    if (isActive) {
-      return;
-    }
-
-    this.show();
+    return this._isShown() ? this.hide() : this.show();
   }
 
   show() {
-    if (
-      this._element.disabled ||
-      this._element.classList.contains(CLASS_NAME_DISABLED) ||
-      this._menu.classList.contains(CLASS_NAME_SHOW)
-    ) {
+    if (isDisabled(this._element) || this._isShown()) {
       return;
     }
 
-    const parent = Dropdown.getParentFromElement(this._element);
     const relatedTarget = {
       relatedTarget: this._element,
     };
@@ -159,65 +137,28 @@ class Dropdown extends BaseComponent {
       return;
     }
 
-    // Totally disable Popper for Dropdowns in Navbar
-    if (this._inNavbar) {
-      Manipulator.setDataAttribute(this._menu, 'popper', 'none');
-    } else {
-      if (typeof Popper === 'undefined') {
-        throw new TypeError("Bootstrap's dropdowns require Popper (https://popper.js.org)");
-      }
-
-      let referenceElement = this._element;
-
-      if (this._config.reference === 'parent') {
-        referenceElement = parent;
-      } else if (isElement(this._config.reference)) {
-        referenceElement = this._config.reference;
-
-        // Check if it's jQuery element
-        if (typeof this._config.reference.jquery !== 'undefined') {
-          referenceElement = this._config.reference[0];
-        }
-      } else if (typeof this._config.reference === 'object') {
-        referenceElement = this._config.reference;
-      }
-
-      const popperConfig = this._getPopperConfig();
-      const isDisplayStatic = popperConfig.modifiers.find(
-        (modifier) => modifier.name === 'applyStyles' && modifier.enabled === false
-      );
-
-      this._popper = Popper.createPopper(referenceElement, this._menu, popperConfig);
-
-      if (isDisplayStatic) {
-        Manipulator.setDataAttribute(this._menu, 'popper', 'static');
-      }
-    }
+    this._createPopper();
 
     // If this is a touch-enabled device we add extra
     // empty mouseover listeners to the body's immediate children;
     // only needed because of broken event delegation on iOS
     // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
-    if ('ontouchstart' in document.documentElement && !parent.closest(SELECTOR_NAVBAR_NAV)) {
-      []
-        .concat(...document.body.children)
-        .forEach((elem) => EventHandler.on(elem, 'mouseover', null, noop()));
+    if ('ontouchstart' in document.documentElement && !this._parent.closest(SELECTOR_NAVBAR_NAV)) {
+      for (const element of [].concat(...document.body.children)) {
+        EventHandler.on(element, 'mouseover', noop);
+      }
     }
 
     this._element.focus();
     this._element.setAttribute('aria-expanded', true);
 
-    this._menu.classList.toggle(CLASS_NAME_SHOW);
-    this._element.classList.toggle(CLASS_NAME_SHOW);
+    this._menu.classList.add(CLASS_NAME_SHOW);
+    this._element.classList.add(CLASS_NAME_SHOW);
     EventHandler.trigger(this._element, EVENT_SHOWN, relatedTarget);
   }
 
   hide() {
-    if (
-      this._element.disabled ||
-      this._element.classList.contains(CLASS_NAME_DISABLED) ||
-      !this._menu.classList.contains(CLASS_NAME_SHOW)
-    ) {
+    if (isDisabled(this._element) || !this._isShown()) {
       return;
     }
 
@@ -225,31 +166,15 @@ class Dropdown extends BaseComponent {
       relatedTarget: this._element,
     };
 
-    const hideEvent = EventHandler.trigger(this._element, EVENT_HIDE, relatedTarget);
-
-    if (hideEvent.defaultPrevented) {
-      return;
-    }
-
-    if (this._popper) {
-      this._popper.destroy();
-    }
-
-    this._menu.classList.toggle(CLASS_NAME_SHOW);
-    this._element.classList.toggle(CLASS_NAME_SHOW);
-    Manipulator.removeDataAttribute(this._menu, 'popper');
-    EventHandler.trigger(this._element, EVENT_HIDDEN, relatedTarget);
+    this._completeHide(relatedTarget);
   }
 
   dispose() {
-    super.dispose();
-    EventHandler.off(this._element, EVENT_KEY);
-    this._menu = null;
-
     if (this._popper) {
       this._popper.destroy();
-      this._popper = null;
     }
+
+    super.dispose();
   }
 
   update() {
@@ -260,23 +185,33 @@ class Dropdown extends BaseComponent {
   }
 
   // Private
+  _completeHide(relatedTarget) {
+    const hideEvent = EventHandler.trigger(this._element, EVENT_HIDE, relatedTarget);
+    if (hideEvent.defaultPrevented) {
+      return;
+    }
 
-  _addEventListeners() {
-    EventHandler.on(this._element, EVENT_CLICK, (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      this.toggle();
-    });
+    // If this is a touch-enabled device we remove the extra
+    // empty mouseover listeners we added for iOS support
+    if ('ontouchstart' in document.documentElement) {
+      for (const element of [].concat(...document.body.children)) {
+        EventHandler.off(element, 'mouseover', noop);
+      }
+    }
+
+    if (this._popper) {
+      this._popper.destroy();
+    }
+
+    this._menu.classList.remove(CLASS_NAME_SHOW);
+    this._element.classList.remove(CLASS_NAME_SHOW);
+    this._element.setAttribute('aria-expanded', 'false');
+    Manipulator.removeDataAttribute(this._menu, 'popper');
+    EventHandler.trigger(this._element, EVENT_HIDDEN, relatedTarget);
   }
 
   _getConfig(config) {
-    config = {
-      ...this.constructor.Default,
-      ...Manipulator.getDataAttributes(this._element),
-      ...config,
-    };
-
-    typeCheckConfig(NAME, config, this.constructor.DefaultType);
+    config = super._getConfig(config);
 
     if (
       typeof config.reference === 'object' &&
@@ -292,12 +227,31 @@ class Dropdown extends BaseComponent {
     return config;
   }
 
-  _getMenuElement() {
-    return SelectorEngine.next(this._element, SELECTOR_MENU)[0];
+  _createPopper() {
+    if (typeof Popper === 'undefined') {
+      throw new TypeError("Bootstrap's dropdowns require Popper (https://popper.js.org)");
+    }
+
+    let referenceElement = this._element;
+
+    if (this._config.reference === 'parent') {
+      referenceElement = this._parent;
+    } else if (isElement(this._config.reference)) {
+      referenceElement = getElement(this._config.reference);
+    } else if (typeof this._config.reference === 'object') {
+      referenceElement = this._config.reference;
+    }
+
+    const popperConfig = this._getPopperConfig();
+    this._popper = Popper.createPopper(referenceElement, this._menu, popperConfig);
+  }
+
+  _isShown() {
+    return this._menu.classList.contains(CLASS_NAME_SHOW);
   }
 
   _getPlacement() {
-    const parentDropdown = this._element.parentNode;
+    const parentDropdown = this._parent;
 
     if (parentDropdown.classList.contains(CLASS_NAME_DROPEND)) {
       return PLACEMENT_RIGHT;
@@ -307,8 +261,16 @@ class Dropdown extends BaseComponent {
       return PLACEMENT_LEFT;
     }
 
+    if (parentDropdown.classList.contains(CLASS_NAME_DROPUP_CENTER)) {
+      return PLACEMENT_TOPCENTER;
+    }
+
+    if (parentDropdown.classList.contains(CLASS_NAME_DROPDOWN_CENTER)) {
+      return PLACEMENT_BOTTOMCENTER;
+    }
+
     // We need to trim the value because custom properties can also include spaces
-    const isEnd = getComputedStyle(this._menu).getPropertyValue('--bs-position').trim() === 'end';
+    const isEnd = getComputedStyle(this._menu).getPropertyValue('--mdb-position').trim() === 'end';
 
     if (parentDropdown.classList.contains(CLASS_NAME_DROPUP)) {
       return isEnd ? PLACEMENT_TOPEND : PLACEMENT_TOP;
@@ -318,14 +280,14 @@ class Dropdown extends BaseComponent {
   }
 
   _detectNavbar() {
-    return this._element.closest(`.${CLASS_NAME_NAVBAR}`) !== null;
+    return this._element.closest(SELECTOR_NAVBAR) !== null;
   }
 
   _getOffset() {
     const { offset } = this._config;
 
     if (typeof offset === 'string') {
-      return offset.split(',').map((val) => Number.parseInt(val, 10));
+      return offset.split(',').map((value) => Number.parseInt(value, 10));
     }
 
     if (typeof offset === 'function') {
@@ -342,7 +304,6 @@ class Dropdown extends BaseComponent {
         {
           name: 'preventOverflow',
           options: {
-            altBoundary: this._config.flip,
             boundary: this._config.boundary,
           },
         },
@@ -355,8 +316,9 @@ class Dropdown extends BaseComponent {
       ],
     };
 
-    // Disable Popper if we have a static display
-    if (this._config.display === 'static') {
+    // Disable Popper if we have a static display or Dropdown is in Navbar
+    if (this._inNavbar || this._config.display === 'static') {
+      Manipulator.setDataAttribute(this._menu, 'popper', 'static'); // TODO: v6 remove
       defaultBsPopperConfig.modifiers = [
         {
           name: 'applyStyles',
@@ -367,210 +329,148 @@ class Dropdown extends BaseComponent {
 
     return {
       ...defaultBsPopperConfig,
-      ...(typeof this._config.popperConfig === 'function'
-        ? this._config.popperConfig(defaultBsPopperConfig)
-        : this._config.popperConfig),
+      ...execute(this._config.popperConfig, [defaultBsPopperConfig]),
     };
   }
 
-  // Static
-
-  static dropdownInterface(element, config) {
-    let data = Data.getData(element, DATA_KEY);
-    const _config = typeof config === 'object' ? config : null;
-
-    if (!data) {
-      data = new Dropdown(element, _config);
-    }
-
-    if (typeof config === 'string') {
-      if (typeof data[config] === 'undefined') {
-        throw new TypeError(`No method named "${config}"`);
-      }
-
-      data[config]();
-    }
-  }
-
-  static jQueryInterface(config) {
-    return this.each(function () {
-      Dropdown.dropdownInterface(this, config);
-    });
-  }
-
-  static clearMenus(event) {
-    if (
-      event &&
-      (event.button === RIGHT_MOUSE_BUTTON || (event.type === 'keyup' && event.key !== TAB_KEY))
-    ) {
-      return;
-    }
-
-    const toggles = SelectorEngine.find(SELECTOR_DATA_TOGGLE);
-
-    for (let i = 0, len = toggles.length; i < len; i++) {
-      const context = Data.getData(toggles[i], DATA_KEY);
-      const relatedTarget = {
-        relatedTarget: toggles[i],
-      };
-
-      if (event && event.type === 'click') {
-        relatedTarget.clickEvent = event;
-      }
-
-      if (!context) {
-        continue;
-      }
-
-      const dropdownMenu = context._menu;
-      if (!toggles[i].classList.contains(CLASS_NAME_SHOW)) {
-        continue;
-      }
-
-      if (
-        event &&
-        ((event.type === 'click' && /input|textarea/i.test(event.target.tagName)) ||
-          (event.type === 'keyup' && event.key === TAB_KEY)) &&
-        dropdownMenu.contains(event.target)
-      ) {
-        continue;
-      }
-
-      const hideEvent = EventHandler.trigger(toggles[i], EVENT_HIDE, relatedTarget);
-      if (hideEvent.defaultPrevented) {
-        continue;
-      }
-
-      // If this is a touch-enabled device we remove the extra
-      // empty mouseover listeners we added for iOS support
-      if ('ontouchstart' in document.documentElement) {
-        []
-          .concat(...document.body.children)
-          .forEach((elem) => EventHandler.off(elem, 'mouseover', null, noop()));
-      }
-
-      toggles[i].setAttribute('aria-expanded', 'false');
-
-      if (context._popper) {
-        context._popper.destroy();
-      }
-
-      dropdownMenu.classList.remove(CLASS_NAME_SHOW);
-      toggles[i].classList.remove(CLASS_NAME_SHOW);
-      Manipulator.removeDataAttribute(dropdownMenu, 'popper');
-      EventHandler.trigger(toggles[i], EVENT_HIDDEN, relatedTarget);
-    }
-  }
-
-  static getParentFromElement(element) {
-    return getElementFromSelector(element) || element.parentNode;
-  }
-
-  static dataApiKeydownHandler(event) {
-    // If not input/textarea:
-    //  - And not a key in REGEXP_KEYDOWN => not a dropdown command
-    // If input/textarea:
-    //  - If space key => not a dropdown command
-    //  - If key is other than escape
-    //    - If key is not up or down => not a dropdown command
-    //    - If trigger inside the menu => not a dropdown command
-    if (
-      /input|textarea/i.test(event.target.tagName)
-        ? event.key === SPACE_KEY ||
-          (event.key !== ESCAPE_KEY &&
-            ((event.key !== ARROW_DOWN_KEY && event.key !== ARROW_UP_KEY) ||
-              event.target.closest(SELECTOR_MENU)))
-        : !REGEXP_KEYDOWN.test(event.key)
-    ) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (this.disabled || this.classList.contains(CLASS_NAME_DISABLED)) {
-      return;
-    }
-
-    const parent = Dropdown.getParentFromElement(this);
-    const isActive = this.classList.contains(CLASS_NAME_SHOW);
-
-    if (event.key === ESCAPE_KEY) {
-      const button = this.matches(SELECTOR_DATA_TOGGLE)
-        ? this
-        : SelectorEngine.prev(this, SELECTOR_DATA_TOGGLE)[0];
-      button.focus();
-      Dropdown.clearMenus();
-      return;
-    }
-
-    if (!isActive && (event.key === ARROW_UP_KEY || event.key === ARROW_DOWN_KEY)) {
-      const button = this.matches(SELECTOR_DATA_TOGGLE)
-        ? this
-        : SelectorEngine.prev(this, SELECTOR_DATA_TOGGLE)[0];
-      button.click();
-      return;
-    }
-
-    if (!isActive || event.key === SPACE_KEY) {
-      Dropdown.clearMenus();
-      return;
-    }
-
-    const items = SelectorEngine.find(SELECTOR_VISIBLE_ITEMS, parent).filter(isVisible);
+  _selectMenuItem({ key, target }) {
+    const items = SelectorEngine.find(SELECTOR_VISIBLE_ITEMS, this._menu).filter((element) =>
+      isVisible(element)
+    );
 
     if (!items.length) {
       return;
     }
 
-    let index = items.indexOf(event.target);
+    // if target isn't included in items (e.g. when expanding the dropdown)
+    // allow cycling to get the last item in case key equals ARROW_UP_KEY
+    getNextActiveElement(items, target, key === ARROW_DOWN_KEY, !items.includes(target)).focus();
+  }
 
-    // Up
-    if (event.key === ARROW_UP_KEY && index > 0) {
-      index--;
+  // Static
+  static jQueryInterface(config) {
+    return this.each(function () {
+      const data = Dropdown.getOrCreateInstance(this, config);
+
+      if (typeof config !== 'string') {
+        return;
+      }
+
+      if (typeof data[config] === 'undefined') {
+        throw new TypeError(`No method named "${config}"`);
+      }
+
+      data[config]();
+    });
+  }
+
+  static clearMenus(event) {
+    if (event.button === RIGHT_MOUSE_BUTTON || (event.type === 'keyup' && event.key !== TAB_KEY)) {
+      return;
     }
 
-    // Down
-    if (event.key === ARROW_DOWN_KEY && index < items.length - 1) {
-      index++;
+    const openToggles = SelectorEngine.find(SELECTOR_DATA_TOGGLE_SHOWN);
+
+    for (const toggle of openToggles) {
+      const context = Dropdown.getInstance(toggle);
+      if (!context || context._config.autoClose === false) {
+        continue;
+      }
+
+      const composedPath = event.composedPath();
+      const isMenuTarget = composedPath.includes(context._menu);
+      if (
+        composedPath.includes(context._element) ||
+        (context._config.autoClose === 'inside' && !isMenuTarget) ||
+        (context._config.autoClose === 'outside' && isMenuTarget)
+      ) {
+        continue;
+      }
+
+      // Tab navigation through the dropdown menu or events from contained inputs shouldn't close the menu
+      if (
+        context._menu.contains(event.target) &&
+        ((event.type === 'keyup' && event.key === TAB_KEY) ||
+          /input|select|option|textarea|form/i.test(event.target.tagName))
+      ) {
+        continue;
+      }
+
+      const relatedTarget = { relatedTarget: context._element };
+
+      if (event.type === 'click') {
+        relatedTarget.clickEvent = event;
+      }
+
+      context._completeHide(relatedTarget);
+    }
+  }
+
+  static dataApiKeydownHandler(event) {
+    // If not an UP | DOWN | ESCAPE key => not a dropdown command
+    // If input/textarea && if key is other than ESCAPE => not a dropdown command
+
+    const isInput = /input|textarea/i.test(event.target.tagName);
+    const isEscapeEvent = event.key === ESCAPE_KEY;
+    const isUpOrDownEvent = [ARROW_UP_KEY, ARROW_DOWN_KEY].includes(event.key);
+
+    if (!isUpOrDownEvent && !isEscapeEvent) {
+      return;
     }
 
-    // index is -1 if the first keydown is an ArrowUp
-    index = index === -1 ? 0 : index;
+    if (isInput && !isEscapeEvent) {
+      return;
+    }
 
-    items[index].focus();
+    event.preventDefault();
+
+    // TODO: v6 revert #37011 & change markup https://getbootstrap.com/docs/5.3/forms/input-group/
+    const getToggleButton = this.matches(SELECTOR_DATA_TOGGLE)
+      ? this
+      : SelectorEngine.prev(this, SELECTOR_DATA_TOGGLE)[0] ||
+        SelectorEngine.next(this, SELECTOR_DATA_TOGGLE)[0] ||
+        SelectorEngine.findOne(SELECTOR_DATA_TOGGLE, event.delegateTarget.parentNode);
+
+    const instance = Dropdown.getOrCreateInstance(getToggleButton);
+
+    if (isUpOrDownEvent) {
+      event.stopPropagation();
+      instance.show();
+      instance._selectMenuItem(event);
+      return;
+    }
+
+    if (instance._isShown()) {
+      // else is escape and we check if it is shown
+      event.stopPropagation();
+      instance.hide();
+      getToggleButton.focus();
+    }
   }
 }
 
 /**
- * ------------------------------------------------------------------------
- * Data Api implementation
- * ------------------------------------------------------------------------
+ * Data API implementation
  */
 
-EventHandler.on(
-  document,
-  EVENT_KEYDOWN_DATA_API,
-  SELECTOR_DATA_TOGGLE,
-  Dropdown.dataApiKeydownHandler
-);
-EventHandler.on(document, EVENT_KEYDOWN_DATA_API, SELECTOR_MENU, Dropdown.dataApiKeydownHandler);
-EventHandler.on(document, EVENT_CLICK_DATA_API, Dropdown.clearMenus);
-EventHandler.on(document, EVENT_KEYUP_DATA_API, Dropdown.clearMenus);
-EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
-  event.preventDefault();
-  event.stopPropagation();
-  Dropdown.dropdownInterface(this, 'toggle');
-});
-EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_FORM_CHILD, (e) => e.stopPropagation());
+// EventHandler.on(
+//   document,
+//   EVENT_KEYDOWN_DATA_API,
+//   SELECTOR_DATA_TOGGLE,
+//   Dropdown.dataApiKeydownHandler
+// );
+// EventHandler.on(document, EVENT_KEYDOWN_DATA_API, SELECTOR_MENU, Dropdown.dataApiKeydownHandler);
+// EventHandler.on(document, EVENT_CLICK_DATA_API, Dropdown.clearMenus);
+// EventHandler.on(document, EVENT_KEYUP_DATA_API, Dropdown.clearMenus);
+// EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
+//   event.preventDefault();
+//   Dropdown.getOrCreateInstance(this).toggle();
+// });
 
 /**
- * ------------------------------------------------------------------------
  * jQuery
- * ------------------------------------------------------------------------
- * add .Dropdown to jQuery only if jQuery is present
  */
 
-defineJQueryPlugin(NAME, Dropdown);
+// defineJQueryPlugin(Dropdown);
 
 export default Dropdown;

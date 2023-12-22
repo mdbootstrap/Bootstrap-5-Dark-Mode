@@ -1,61 +1,39 @@
 /*!
- * Bootstrap event-handler.js v5.0.0-beta2 (https://getbootstrap.com/)
- * Copyright 2011-2021 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+ * Bootstrap event-handler.js v5.3.2 (https://getbootstrap.com/)
+ * Copyright 2011-2023 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined'
-    ? (module.exports = factory())
+    ? (module.exports = factory(require('../util/index.js')))
     : typeof define === 'function' && define.amd
-    ? define(factory)
+    ? define(['../util/index'], factory)
     : ((global = typeof globalThis !== 'undefined' ? globalThis : global || self),
-      (global.EventHandler = factory()));
-})(this, function () {
+      (global.EventHandler = factory(global.Index)));
+})(this, function (index_js) {
   'use strict';
 
   /**
    * --------------------------------------------------------------------------
-   * Bootstrap (v5.0.0-beta2): util/index.js
+   * Bootstrap dom/event-handler.js
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
    * --------------------------------------------------------------------------
    */
 
-  var getjQuery = function getjQuery() {
-    var _window = window,
-      jQuery = _window.jQuery;
-
-    if (jQuery && !document.body.hasAttribute('data-bs-no-jquery')) {
-      return jQuery;
-    }
-
-    return null;
-  };
-
-  document.documentElement.dir === 'rtl';
-
   /**
-   * --------------------------------------------------------------------------
-   * Bootstrap (v5.0.0-beta2): dom/event-handler.js
-   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
-   * --------------------------------------------------------------------------
-   */
-  /**
-   * ------------------------------------------------------------------------
    * Constants
-   * ------------------------------------------------------------------------
    */
 
-  var namespaceRegex = /[^.]*(?=\..*)\.|.*/;
-  var stripNameRegex = /\..*/;
-  var stripUidRegex = /::\d+$/;
-  var eventRegistry = {}; // Events storage
-
-  var uidEvent = 1;
-  var customEvents = {
+  const namespaceRegex = /[^.]*(?=\..*)\.|.*/;
+  const stripNameRegex = /\..*/;
+  const stripUidRegex = /::\d+$/;
+  const eventRegistry = {}; // Events storage
+  let uidEvent = 1;
+  const customEvents = {
     mouseenter: 'mouseover',
     mouseleave: 'mouseout',
   };
-  var nativeEvents = new Set([
+  const nativeEvents = new Set([
     'click',
     'dblclick',
     'mouseup',
@@ -103,221 +81,181 @@
     'abort',
     'scroll',
   ]);
+
   /**
-   * ------------------------------------------------------------------------
    * Private methods
-   * ------------------------------------------------------------------------
    */
 
-  function getUidEvent(element, uid) {
-    return (uid && uid + '::' + uidEvent++) || element.uidEvent || uidEvent++;
+  function makeEventUid(element, uid) {
+    return (uid && `${uid}::${uidEvent++}`) || element.uidEvent || uidEvent++;
   }
-
-  function getEvent(element) {
-    var uid = getUidEvent(element);
+  function getElementEvents(element) {
+    const uid = makeEventUid(element);
     element.uidEvent = uid;
     eventRegistry[uid] = eventRegistry[uid] || {};
     return eventRegistry[uid];
   }
-
   function bootstrapHandler(element, fn) {
     return function handler(event) {
-      event.delegateTarget = element;
-
+      hydrateObj(event, {
+        delegateTarget: element,
+      });
       if (handler.oneOff) {
         EventHandler.off(element, event.type, fn);
       }
-
       return fn.apply(element, [event]);
     };
   }
-
   function bootstrapDelegationHandler(element, selector, fn) {
     return function handler(event) {
-      var domElements = element.querySelectorAll(selector);
-
-      for (var target = event.target; target && target !== this; target = target.parentNode) {
-        for (var i = domElements.length; i--; ) {
-          if (domElements[i] === target) {
-            event.delegateTarget = target;
-
-            if (handler.oneOff) {
-              // eslint-disable-next-line unicorn/consistent-destructuring
-              EventHandler.off(element, event.type, fn);
-            }
-
-            return fn.apply(target, [event]);
+      const domElements = element.querySelectorAll(selector);
+      for (let { target } = event; target && target !== this; target = target.parentNode) {
+        for (const domElement of domElements) {
+          if (domElement !== target) {
+            continue;
           }
+          hydrateObj(event, {
+            delegateTarget: target,
+          });
+          if (handler.oneOff) {
+            EventHandler.off(element, event.type, selector, fn);
+          }
+          return fn.apply(target, [event]);
         }
-      } // To please ESLint
-
-      return null;
+      }
     };
   }
-
-  function findHandler(events, handler, delegationSelector) {
-    if (delegationSelector === void 0) {
-      delegationSelector = null;
-    }
-
-    var uidEventList = Object.keys(events);
-
-    for (var i = 0, len = uidEventList.length; i < len; i++) {
-      var event = events[uidEventList[i]];
-
-      if (event.originalHandler === handler && event.delegationSelector === delegationSelector) {
-        return event;
-      }
-    }
-
-    return null;
+  function findHandler(events, callable, delegationSelector = null) {
+    return Object.values(events).find(
+      (event) => event.callable === callable && event.delegationSelector === delegationSelector
+    );
   }
-
-  function normalizeParams(originalTypeEvent, handler, delegationFn) {
-    var delegation = typeof handler === 'string';
-    var originalHandler = delegation ? delegationFn : handler; // allow to get the native events from namespaced events ('click.bs.button' --> 'click')
-
-    var typeEvent = originalTypeEvent.replace(stripNameRegex, '');
-    var custom = customEvents[typeEvent];
-
-    if (custom) {
-      typeEvent = custom;
-    }
-
-    var isNative = nativeEvents.has(typeEvent);
-
-    if (!isNative) {
+  function normalizeParameters(originalTypeEvent, handler, delegationFunction) {
+    const isDelegated = typeof handler === 'string';
+    // TODO: tooltip passes `false` instead of selector, so we need to check
+    const callable = isDelegated ? delegationFunction : handler || delegationFunction;
+    let typeEvent = getTypeEvent(originalTypeEvent);
+    if (!nativeEvents.has(typeEvent)) {
       typeEvent = originalTypeEvent;
     }
-
-    return [delegation, originalHandler, typeEvent];
+    return [isDelegated, callable, typeEvent];
   }
-
-  function addHandler(element, originalTypeEvent, handler, delegationFn, oneOff) {
+  function addHandler(element, originalTypeEvent, handler, delegationFunction, oneOff) {
     if (typeof originalTypeEvent !== 'string' || !element) {
       return;
     }
+    let [isDelegated, callable, typeEvent] = normalizeParameters(
+      originalTypeEvent,
+      handler,
+      delegationFunction
+    );
 
-    if (!handler) {
-      handler = delegationFn;
-      delegationFn = null;
+    // in case of mouseenter or mouseleave wrap the handler within a function that checks for its DOM position
+    // this prevents the handler from being dispatched the same way as mouseover or mouseout does
+    if (originalTypeEvent in customEvents) {
+      const wrapFunction = (fn) => {
+        return function (event) {
+          if (
+            !event.relatedTarget ||
+            (event.relatedTarget !== event.delegateTarget &&
+              !event.delegateTarget.contains(event.relatedTarget))
+          ) {
+            return fn.call(this, event);
+          }
+        };
+      };
+      callable = wrapFunction(callable);
     }
-
-    var _normalizeParams = normalizeParams(originalTypeEvent, handler, delegationFn),
-      delegation = _normalizeParams[0],
-      originalHandler = _normalizeParams[1],
-      typeEvent = _normalizeParams[2];
-
-    var events = getEvent(element);
-    var handlers = events[typeEvent] || (events[typeEvent] = {});
-    var previousFn = findHandler(handlers, originalHandler, delegation ? handler : null);
-
-    if (previousFn) {
-      previousFn.oneOff = previousFn.oneOff && oneOff;
+    const events = getElementEvents(element);
+    const handlers = events[typeEvent] || (events[typeEvent] = {});
+    const previousFunction = findHandler(handlers, callable, isDelegated ? handler : null);
+    if (previousFunction) {
+      previousFunction.oneOff = previousFunction.oneOff && oneOff;
       return;
     }
-
-    var uid = getUidEvent(originalHandler, originalTypeEvent.replace(namespaceRegex, ''));
-    var fn = delegation
-      ? bootstrapDelegationHandler(element, handler, delegationFn)
-      : bootstrapHandler(element, handler);
-    fn.delegationSelector = delegation ? handler : null;
-    fn.originalHandler = originalHandler;
+    const uid = makeEventUid(callable, originalTypeEvent.replace(namespaceRegex, ''));
+    const fn = isDelegated
+      ? bootstrapDelegationHandler(element, handler, callable)
+      : bootstrapHandler(element, callable);
+    fn.delegationSelector = isDelegated ? handler : null;
+    fn.callable = callable;
     fn.oneOff = oneOff;
     fn.uidEvent = uid;
     handlers[uid] = fn;
-    element.addEventListener(typeEvent, fn, delegation);
+    element.addEventListener(typeEvent, fn, isDelegated);
   }
-
   function removeHandler(element, events, typeEvent, handler, delegationSelector) {
-    var fn = findHandler(events[typeEvent], handler, delegationSelector);
-
+    const fn = findHandler(events[typeEvent], handler, delegationSelector);
     if (!fn) {
       return;
     }
-
     element.removeEventListener(typeEvent, fn, Boolean(delegationSelector));
     delete events[typeEvent][fn.uidEvent];
   }
-
   function removeNamespacedHandlers(element, events, typeEvent, namespace) {
-    var storeElementEvent = events[typeEvent] || {};
-    Object.keys(storeElementEvent).forEach(function (handlerKey) {
+    const storeElementEvent = events[typeEvent] || {};
+    for (const [handlerKey, event] of Object.entries(storeElementEvent)) {
       if (handlerKey.includes(namespace)) {
-        var event = storeElementEvent[handlerKey];
-        removeHandler(element, events, typeEvent, event.originalHandler, event.delegationSelector);
+        removeHandler(element, events, typeEvent, event.callable, event.delegationSelector);
       }
-    });
+    }
   }
-
-  var EventHandler = {
-    on: function on(element, event, handler, delegationFn) {
-      addHandler(element, event, handler, delegationFn, false);
+  function getTypeEvent(event) {
+    // allow to get the native events from namespaced events ('click.bs.button' --> 'click')
+    event = event.replace(stripNameRegex, '');
+    return customEvents[event] || event;
+  }
+  const EventHandler = {
+    on(element, event, handler, delegationFunction) {
+      addHandler(element, event, handler, delegationFunction, false);
     },
-    one: function one(element, event, handler, delegationFn) {
-      addHandler(element, event, handler, delegationFn, true);
+    one(element, event, handler, delegationFunction) {
+      addHandler(element, event, handler, delegationFunction, true);
     },
-    off: function off(element, originalTypeEvent, handler, delegationFn) {
+    off(element, originalTypeEvent, handler, delegationFunction) {
       if (typeof originalTypeEvent !== 'string' || !element) {
         return;
       }
-
-      var _normalizeParams2 = normalizeParams(originalTypeEvent, handler, delegationFn),
-        delegation = _normalizeParams2[0],
-        originalHandler = _normalizeParams2[1],
-        typeEvent = _normalizeParams2[2];
-
-      var inNamespace = typeEvent !== originalTypeEvent;
-      var events = getEvent(element);
-      var isNamespace = originalTypeEvent.startsWith('.');
-
-      if (typeof originalHandler !== 'undefined') {
+      const [isDelegated, callable, typeEvent] = normalizeParameters(
+        originalTypeEvent,
+        handler,
+        delegationFunction
+      );
+      const inNamespace = typeEvent !== originalTypeEvent;
+      const events = getElementEvents(element);
+      const storeElementEvent = events[typeEvent] || {};
+      const isNamespace = originalTypeEvent.startsWith('.');
+      if (typeof callable !== 'undefined') {
         // Simplest case: handler is passed, remove that listener ONLY.
-        if (!events || !events[typeEvent]) {
+        if (!Object.keys(storeElementEvent).length) {
           return;
         }
-
-        removeHandler(element, events, typeEvent, originalHandler, delegation ? handler : null);
+        removeHandler(element, events, typeEvent, callable, isDelegated ? handler : null);
         return;
       }
-
       if (isNamespace) {
-        Object.keys(events).forEach(function (elementEvent) {
+        for (const elementEvent of Object.keys(events)) {
           removeNamespacedHandlers(element, events, elementEvent, originalTypeEvent.slice(1));
-        });
-      }
-
-      var storeElementEvent = events[typeEvent] || {};
-      Object.keys(storeElementEvent).forEach(function (keyHandlers) {
-        var handlerKey = keyHandlers.replace(stripUidRegex, '');
-
-        if (!inNamespace || originalTypeEvent.includes(handlerKey)) {
-          var event = storeElementEvent[keyHandlers];
-          removeHandler(
-            element,
-            events,
-            typeEvent,
-            event.originalHandler,
-            event.delegationSelector
-          );
         }
-      });
+      }
+      for (const [keyHandlers, event] of Object.entries(storeElementEvent)) {
+        const handlerKey = keyHandlers.replace(stripUidRegex, '');
+        if (!inNamespace || originalTypeEvent.includes(handlerKey)) {
+          removeHandler(element, events, typeEvent, event.callable, event.delegationSelector);
+        }
+      }
     },
-    trigger: function trigger(element, event, args) {
+    trigger(element, event, args) {
       if (typeof event !== 'string' || !element) {
         return null;
       }
-
-      var $ = getjQuery();
-      var typeEvent = event.replace(stripNameRegex, '');
-      var inNamespace = event !== typeEvent;
-      var isNative = nativeEvents.has(typeEvent);
-      var jQueryEvent;
-      var bubbles = true;
-      var nativeDispatch = true;
-      var defaultPrevented = false;
-      var evt = null;
-
+      const $ = index_js.getjQuery();
+      const typeEvent = getTypeEvent(event);
+      const inNamespace = event !== typeEvent;
+      let jQueryEvent = null;
+      let bubbles = true;
+      let nativeDispatch = true;
+      let defaultPrevented = false;
       if (inNamespace && $) {
         jQueryEvent = $.Event(event, args);
         $(element).trigger(jQueryEvent);
@@ -325,42 +263,40 @@
         nativeDispatch = !jQueryEvent.isImmediatePropagationStopped();
         defaultPrevented = jQueryEvent.isDefaultPrevented();
       }
-
-      if (isNative) {
-        evt = document.createEvent('HTMLEvents');
-        evt.initEvent(typeEvent, bubbles, true);
-      } else {
-        evt = new CustomEvent(event, {
-          bubbles: bubbles,
+      const evt = hydrateObj(
+        new Event(event, {
+          bubbles,
           cancelable: true,
-        });
-      } // merge custom information in our event
-
-      if (typeof args !== 'undefined') {
-        Object.keys(args).forEach(function (key) {
-          Object.defineProperty(evt, key, {
-            get: function get() {
-              return args[key];
-            },
-          });
-        });
-      }
-
+        }),
+        args
+      );
       if (defaultPrevented) {
         evt.preventDefault();
       }
-
       if (nativeDispatch) {
         element.dispatchEvent(evt);
       }
-
-      if (evt.defaultPrevented && typeof jQueryEvent !== 'undefined') {
+      if (evt.defaultPrevented && jQueryEvent) {
         jQueryEvent.preventDefault();
       }
-
       return evt;
     },
   };
+  function hydrateObj(obj, meta = {}) {
+    for (const [key, value] of Object.entries(meta)) {
+      try {
+        obj[key] = value;
+      } catch (_unused) {
+        Object.defineProperty(obj, key, {
+          configurable: true,
+          get() {
+            return value;
+          },
+        });
+      }
+    }
+    return obj;
+  }
 
   return EventHandler;
 });

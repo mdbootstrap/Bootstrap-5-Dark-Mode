@@ -13,19 +13,17 @@
     <!-- Font Awesome -->
     <link
       rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
     <!-- Google Fonts Roboto -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
     />
-    <!-- Dark MDB theme -->
-    <link rel="stylesheet" href="css/mdb.dark.min.css" />
     <!-- Regular MDB theme -->
-    <!-- <link rel="stylesheet" href="css/mdb.min.css" /> -->
+    <link rel="stylesheet" href="css/mdb.min.css" />
   </head>
-  <body>
+  <body data-mdb-theme="dark">
     <!-- Start your project here-->
     <div class="container my-5">
       <!-- Section: Components -->
@@ -34,7 +32,7 @@
           <h3 class="text-center"><strong>Demo</strong></h3>
           <div class="text-center">
             <a
-              class="btn btn-outline-light"
+              class="btn btn-outline-light" data-mdb-ripple-init
               href="https://mdbootstrap.com/freebies/dark-theme/"
               target="_blank"
               role="button"
@@ -49,7 +47,7 @@
             <div class="text-center">
               <h4><strong>Cards</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/cards/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -67,7 +65,7 @@
                       Some quick example text to build on the card title and
                       make up the bulk of the card's content.
                     </p>
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                       Button
                     </button>
                   </div>
@@ -96,7 +94,7 @@
               <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card">
                   <div
-                    class="bg-image hover-overlay ripple"
+                    class="bg-image hover-overlay" data-mdb-ripple-init
                     data-mdb-ripple-color="light"
                   >
                     <img
@@ -116,7 +114,7 @@
                       Some quick example text to build on the card title and
                       make up the bulk of the card's content.
                     </p>
-                    <a href="#!" class="btn btn-primary">Button</a>
+                    <a href="#!" class="btn btn-primary" data-mdb-ripple-init>Button</a>
                   </div>
                 </div>
               </div>
@@ -125,16 +123,16 @@
               <!--Grid column-->
               <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card text-center mb-4">
-                  <div class="card-header bg-white">Featured</div>
+                  <div class="card-header">Featured</div>
                   <div class="card-body">
                     <h5 class="card-title">Special title treatment</h5>
                     <p class="card-text">
                       With supporting text below as a natural lead-in to
                       additional content.
                     </p>
-                    <a href="#" class="btn btn-primary">Button</a>
+                    <a href="#" class="btn btn-primary" data-mdb-ripple-init>Button</a>
                   </div>
-                  <div class="card-footer bg-white text-muted">2 days ago</div>
+                  <div class="card-footer  text-muted">2 days ago</div>
                 </div>
 
                 <div class="card mb-3" style="max-width: 540px">
@@ -177,7 +175,7 @@
             <div class="text-center">
               <h4><strong>Carousel</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/carousel/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -188,10 +186,10 @@
             <div
               id="carouselExampleCaptions"
               class="carousel slide carousel-fade shadow-3-strong"
-              data-mdb-ride="carousel"
+              data-mdb-ride="carousel" data-mdb-carousel-init
             >
               <!-- Indicators -->
-              <ol class="carousel-indicators">
+              <div class="carousel-indicators">
                 <li
                   data-mdb-target="#carouselExampleCaptions"
                   data-mdb-slide-to="0"
@@ -208,7 +206,7 @@
                   class="active"
                   aria-current="true"
                 ></li>
-              </ol>
+              </div>
 
               <!-- Inner -->
               <div class="carousel-inner">
@@ -297,7 +295,7 @@
             <div class="text-center">
               <h4><strong>Buttons</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/buttons/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -306,17 +304,18 @@
 
             <!--Section: Regular-->
             <section class="mb-4">
-              <button type="button" class="btn btn-primary">Primary</button>
-              <button type="button" class="btn btn-secondary">Secondary</button>
-              <button type="button" class="btn btn-success">Success</button>
-              <button type="button" class="btn btn-danger">Danger</button>
-              <button type="button" class="btn btn-warning">Warning</button>
-              <button type="button" class="btn btn-info">Info</button>
-              <button type="button" class="btn btn-light">Light</button>
-              <button type="button" class="btn btn-dark">Dark</button>
+              <button type="button" class="btn btn-primary" data-mdb-ripple-init>Primary</button>
+              <button type="button" class="btn btn-secondary" data-mdb-ripple-init>Secondary</button>
+              <button type="button" class="btn btn-success" data-mdb-ripple-init>Success</button>
+              <button type="button" class="btn btn-danger" data-mdb-ripple-init>Danger</button>
+              <button type="button" class="btn btn-warning" data-mdb-ripple-init>Warning</button>
+              <button type="button" class="btn btn-info" data-mdb-ripple-init>Info</button>
+              <button type="button" class="btn btn-light" data-mdb-ripple-init>Light</button>
+              <button type="button" class="btn btn-dark" data-mdb-ripple-init>Dark</button>
               <button
                 type="button"
                 class="btn btn-link"
+                data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Link
@@ -328,42 +327,42 @@
             <section class="mb-4">
               <button
                 type="button"
-                class="btn btn-outline-primary"
+                class="btn btn-outline-primary" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Primary
               </button>
               <button
                 type="button"
-                class="btn btn-outline-secondary"
+                class="btn btn-outline-secondary" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Secondary
               </button>
               <button
                 type="button"
-                class="btn btn-outline-success"
+                class="btn btn-outline-success" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Success
               </button>
               <button
                 type="button"
-                class="btn btn-outline-danger"
+                class="btn btn-outline-danger" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Danger
               </button>
               <button
                 type="button"
-                class="btn btn-outline-warning"
+                class="btn btn-outline-warning" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Warning
               </button>
               <button
                 type="button"
-                class="btn btn-outline-info"
+                class="btn btn-outline-info" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Info
@@ -371,7 +370,7 @@
 
               <button
                 type="button"
-                class="btn btn-outline-dark"
+                class="btn btn-outline-dark" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Dark
@@ -381,28 +380,28 @@
 
             <!--Section: Rounded-->
             <section class="mb-4">
-              <button type="button" class="btn btn-primary btn-rounded">
+              <button type="button" class="btn btn-primary btn-rounded" data-mdb-ripple-init>
                 Primary
               </button>
-              <button type="button" class="btn btn-secondary btn-rounded">
+              <button type="button" class="btn btn-secondary btn-rounded" data-mdb-ripple-init>
                 Secondary
               </button>
-              <button type="button" class="btn btn-success btn-rounded">
+              <button type="button" class="btn btn-success btn-rounded" data-mdb-ripple-init>
                 Success
               </button>
-              <button type="button" class="btn btn-danger btn-rounded">
+              <button type="button" class="btn btn-danger btn-rounded" data-mdb-ripple-init>
                 Danger
               </button>
-              <button type="button" class="btn btn-warning btn-rounded">
+              <button type="button" class="btn btn-warning btn-rounded" data-mdb-ripple-init>
                 Warning
               </button>
-              <button type="button" class="btn btn-info btn-rounded">
+              <button type="button" class="btn btn-info btn-rounded" data-mdb-ripple-init>
                 Info
               </button>
-              <button type="button" class="btn btn-light btn-rounded">
+              <button type="button" class="btn btn-light btn-rounded" data-mdb-ripple-init>
                 Light
               </button>
-              <button type="button" class="btn btn-dark btn-rounded">
+              <button type="button" class="btn btn-dark btn-rounded" data-mdb-ripple-init>
                 Dark
               </button>
             </section>
@@ -412,49 +411,49 @@
             <section class="mb-4">
               <button
                 type="button"
-                class="btn btn-outline-primary btn-rounded"
+                class="btn btn-outline-primary btn-rounded" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Primary
               </button>
               <button
                 type="button"
-                class="btn btn-outline-secondary btn-rounded"
+                class="btn btn-outline-secondary btn-rounded" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Secondary
               </button>
               <button
                 type="button"
-                class="btn btn-outline-success btn-rounded"
+                class="btn btn-outline-success btn-rounded" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Success
               </button>
               <button
                 type="button"
-                class="btn btn-outline-danger btn-rounded"
+                class="btn btn-outline-danger btn-rounded" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Danger
               </button>
               <button
                 type="button"
-                class="btn btn-outline-warning btn-rounded"
+                class="btn btn-outline-warning btn-rounded" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Warning
               </button>
               <button
                 type="button"
-                class="btn btn-outline-info btn-rounded"
+                class="btn btn-outline-info btn-rounded" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Info
               </button>
               <button
                 type="button"
-                class="btn btn-outline-dark btn-rounded"
+                class="btn btn-outline-dark btn-rounded" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 Dark
@@ -464,11 +463,11 @@
 
             <!--Section: Sizes-->
             <section class="mb-4">
-              <button type="button" class="btn btn-primary btn-sm">
+              <button type="button" class="btn btn-primary btn-sm" data-mdb-ripple-init>
                 Button
               </button>
-              <button type="button" class="btn btn-primary">Button</button>
-              <button type="button" class="btn btn-primary btn-lg">
+              <button type="button" class="btn btn-primary" data-mdb-ripple-init>Button</button>
+              <button type="button" class="btn btn-primary btn-lg" data-mdb-ripple-init>
                 Button
               </button>
             </section>
@@ -476,20 +475,20 @@
 
             <!--Section: Floating-->
             <section class="mb-4">
-              <button type="button" class="btn btn-primary btn-lg btn-floating">
+              <button type="button" class="btn btn-primary btn-lg btn-floating" data-mdb-ripple-init>
                 <i class="fab fa-facebook-f"></i>
               </button>
               <button
                 type="button"
-                class="btn btn-outline-success btn-floating btn-lg"
+                class="btn btn-outline-success btn-floating btn-lg" data-mdb-ripple-init
                 data-mdb-ripple-color="dark"
               >
                 <i class="fas fa-star"></i>
               </button>
-              <button type="button" class="btn btn-danger btn-floating btn-lg">
+              <button type="button" class="btn btn-danger btn-floating btn-lg" data-mdb-ripple-init>
                 <i class="fas fa-magic"></i>
               </button>
-              <button type="button" class="btn btn-dark btn-floating btn-lg">
+              <button type="button" class="btn btn-dark btn-floating btn-lg" data-mdb-ripple-init>
                 <i class="fab fa-apple"></i>
               </button>
             </section>
@@ -503,13 +502,13 @@
                 <div class="col-md-6">
                   <button
                     type="button"
-                    class="btn btn-primary btn-lg btn-block"
+                    class="btn btn-primary btn-lg btn-block" data-mdb-ripple-init
                   >
                     Block level button
                   </button>
                   <button
                     type="button"
-                    class="btn btn-secondary btn-lg btn-block"
+                    class="btn btn-secondary btn-lg btn-block" data-mdb-ripple-init
                   >
                     Block level button
                   </button>
@@ -524,7 +523,7 @@
             <section class="mb-4">
               <!-- Facebook -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #3b5998"
                 href="#!"
                 role="button"
@@ -533,7 +532,7 @@
 
               <!-- Twitter -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #55acee"
                 href="#!"
                 role="button"
@@ -542,7 +541,7 @@
 
               <!-- Google -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #dd4b39"
                 href="#!"
                 role="button"
@@ -551,7 +550,7 @@
 
               <!-- Instagram -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #ac2bac"
                 href="#!"
                 role="button"
@@ -560,7 +559,7 @@
 
               <!-- Linkedin -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #0082ca"
                 href="#!"
                 role="button"
@@ -569,7 +568,7 @@
 
               <!-- Pinterest -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #c61118"
                 href="#!"
                 role="button"
@@ -578,7 +577,7 @@
 
               <!-- Vkontakte -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #4c75a3"
                 href="#!"
                 role="button"
@@ -587,7 +586,7 @@
 
               <!-- Stack overflow -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #ffac44"
                 href="#!"
                 role="button"
@@ -596,7 +595,7 @@
 
               <!-- Youtube -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #ed302f"
                 href="#!"
                 role="button"
@@ -605,7 +604,7 @@
 
               <!-- Slack -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #481449"
                 href="#!"
                 role="button"
@@ -614,7 +613,7 @@
 
               <!-- Github -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #333333"
                 href="#!"
                 role="button"
@@ -623,7 +622,7 @@
 
               <!-- Dribbble -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #ec4a89"
                 href="#!"
                 role="button"
@@ -632,7 +631,7 @@
 
               <!-- Reddit -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #ff4500"
                 href="#!"
                 role="button"
@@ -641,7 +640,7 @@
 
               <!-- Whatsapp -->
               <a
-                class="btn btn-primary"
+                class="btn btn-primary" data-mdb-ripple-init
                 style="background-color: #25d366"
                 href="#!"
                 role="button"
@@ -659,7 +658,7 @@
             <div class="text-center">
               <h4><strong>Input elements</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/forms/input-fields/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -670,7 +669,7 @@
             <div class="row">
               <!--Grid column-->
               <div class="col-lg-4 col-md-12 mb-4">
-                <div class="form-outline mb-3">
+                <div class="form-outline mb-3" data-mdb-input-init>
                   <input type="text" id="form1" class="form-control" />
                   <label class="form-label" for="form1" style="margin-left: 0px"
                     >Example label</label
@@ -684,7 +683,7 @@
 
                 <form class="row g-3 mb-3">
                   <div class="col-auto">
-                    <div class="form-outline">
+                    <div class="form-outline" data-mdb-input-init>
                       <input
                         type="password"
                         class="form-control"
@@ -719,14 +718,14 @@
                     </div>
                   </div>
                   <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" data-mdb-ripple-init>
                       Confirm identity
                     </button>
                   </div>
                 </form>
 
                 <form>
-                  <div class="form-outline">
+                  <div class="form-outline" data-mdb-input-init>
                     <input
                       type="email"
                       class="form-control"
@@ -759,7 +758,7 @@
                   <div id="emailHelp" class="form-text mb-3">
                     We'll never share your email with anyone else.
                   </div>
-                  <div class="form-outline mb-3">
+                  <div class="form-outline mb-3" data-mdb-input-init>
                     <input
                       type="password"
                       class="form-control"
@@ -795,7 +794,7 @@
                       >Check me out</label
                     >
                   </div>
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-primary" data-mdb-ripple-init>Submit</button>
                 </form>
               </div>
               <!--Grid column-->
@@ -904,10 +903,9 @@
 
               <!--Grid column-->
               <div class="col-lg-5 col-md-6 mb-4">
-                <div class="mb-3">
-                  <label class="form-label" for="customRange1"
-                    >Example range</label
-                  >
+
+                <label class="form-label" for="customRange1">Example range</label>
+                <div class="range mb-3" data-mdb-range-init>
                   <input type="range" class="form-range" id="customRange1" />
                 </div>
 
@@ -975,7 +973,7 @@
             <div class="text-center">
               <h4><strong>Forms</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/forms/overview/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -986,7 +984,7 @@
               <div class="col-md-6 mb-4">
                 <form>
                   <!-- Email input -->
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" data-mdb-input-init>
                     <input
                       type="email"
                       id="form2Example1"
@@ -1017,7 +1015,7 @@
                   </div>
 
                   <!-- Password input -->
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" data-mdb-input-init>
                     <input
                       type="password"
                       id="form2Example2"
@@ -1069,7 +1067,7 @@
                   </div>
 
                   <!-- Submit button -->
-                  <button type="submit" class="btn btn-primary btn-block mb-4">
+                  <button type="submit" class="btn btn-primary btn-block mb-4" data-mdb-ripple-init>
                     Sign in
                   </button>
 
@@ -1079,28 +1077,28 @@
                     <p>or sign up with:</p>
                     <button
                       type="button"
-                      class="btn btn-primary btn-floating mx-1"
+                      class="btn btn-primary btn-floating mx-1" data-mdb-ripple-init
                     >
                       <i class="fab fa-facebook-f"></i>
                     </button>
 
                     <button
                       type="button"
-                      class="btn btn-primary btn-floating mx-1"
+                      class="btn btn-primary btn-floating mx-1" data-mdb-ripple-init
                     >
                       <i class="fab fa-google"></i>
                     </button>
 
                     <button
                       type="button"
-                      class="btn btn-primary btn-floating mx-1"
+                      class="btn btn-primary btn-floating mx-1" data-mdb-ripple-init
                     >
                       <i class="fab fa-twitter"></i>
                     </button>
 
                     <button
                       type="button"
-                      class="btn btn-primary btn-floating mx-1"
+                      class="btn btn-primary btn-floating mx-1" data-mdb-ripple-init
                     >
                       <i class="fab fa-github"></i>
                     </button>
@@ -1113,7 +1111,7 @@
                   <!-- 2 column grid layout with text inputs for the first and last names -->
                   <div class="row mb-4">
                     <div class="col">
-                      <div class="form-outline">
+                      <div class="form-outline" data-mdb-input-init>
                         <input
                           type="text"
                           id="form3Example1"
@@ -1147,7 +1145,7 @@
                       </div>
                     </div>
                     <div class="col">
-                      <div class="form-outline">
+                      <div class="form-outline" data-mdb-input-init>
                         <input
                           type="text"
                           id="form3Example2"
@@ -1183,7 +1181,7 @@
                   </div>
 
                   <!-- Email input -->
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" data-mdb-input-init>
                     <input
                       type="email"
                       id="form3Example3"
@@ -1214,7 +1212,7 @@
                   </div>
 
                   <!-- Password input -->
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" data-mdb-input-init>
                     <input
                       type="password"
                       id="form3Example4"
@@ -1256,7 +1254,7 @@
                   </div>
 
                   <!-- Submit button -->
-                  <button type="submit" class="btn btn-primary btn-block mb-4">
+                  <button type="submit" class="btn btn-primary btn-block mb-4" data-mdb-ripple-init>
                     Sign up
                   </button>
 
@@ -1265,28 +1263,28 @@
                     <p>or sign up with:</p>
                     <button
                       type="button"
-                      class="btn btn-primary btn-floating mx-1"
+                      class="btn btn-primary btn-floating mx-1" data-mdb-ripple-init
                     >
                       <i class="fab fa-facebook-f"></i>
                     </button>
 
                     <button
                       type="button"
-                      class="btn btn-primary btn-floating mx-1"
+                      class="btn btn-primary btn-floating mx-1" data-mdb-ripple-init
                     >
                       <i class="fab fa-google"></i>
                     </button>
 
                     <button
                       type="button"
-                      class="btn btn-primary btn-floating mx-1"
+                      class="btn btn-primary btn-floating mx-1" data-mdb-ripple-init
                     >
                       <i class="fab fa-twitter"></i>
                     </button>
 
                     <button
                       type="button"
-                      class="btn btn-primary btn-floating mx-1"
+                      class="btn btn-primary btn-floating mx-1" data-mdb-ripple-init
                     >
                       <i class="fab fa-github"></i>
                     </button>
@@ -1301,7 +1299,7 @@
               <div class="col-md-6 mb-4">
                 <form>
                   <!-- Name input -->
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" data-mdb-input-init>
                     <input
                       type="text"
                       id="form4Example1"
@@ -1332,7 +1330,7 @@
                   </div>
 
                   <!-- Email input -->
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" data-mdb-input-init>
                     <input
                       type="email"
                       id="form4Example2"
@@ -1363,7 +1361,7 @@
                   </div>
 
                   <!-- Message input -->
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" data-mdb-input-init>
                     <textarea
                       class="form-control"
                       id="form4Example3"
@@ -1397,7 +1395,7 @@
                   </div>
 
                   <!-- Submit button -->
-                  <button type="submit" class="btn btn-primary btn-block mb-4">
+                  <button type="submit" class="btn btn-primary btn-block mb-4" data-mdb-ripple-init>
                     Send
                   </button>
                 </form>
@@ -1406,7 +1404,7 @@
               <div class="col-md-6 mb-4">
                 <form>
                   <!-- Name input -->
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" data-mdb-input-init>
                     <input
                       type="text"
                       id="form5Example1"
@@ -1437,7 +1435,7 @@
                   </div>
 
                   <!-- Email input -->
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4" data-mdb-input-init>
                     <input
                       type="email"
                       id="form5Example2"
@@ -1482,7 +1480,7 @@
                   </div>
 
                   <!-- Submit button -->
-                  <button type="submit" class="btn btn-primary btn-block mb-4">
+                  <button type="submit" class="btn btn-primary btn-block mb-4" data-mdb-ripple-init>
                     Subscribe
                   </button>
                 </form>
@@ -1494,12 +1492,12 @@
             <div class="row">
               <div class="col-md-8 mb-4">
                 <!--Section: Checkout form-->
-                <section class="shadow-5 p-4">
+                <section class="shadow-5 p-4 bg-body-tertiary">
                   <form>
                     <!-- 2 column grid layout with text inputs for the first and last names -->
                     <div class="row mb-4">
                       <div class="col">
-                        <div class="form-outline">
+                        <div class="form-outline" data-mdb-input-init>
                           <input
                             type="text"
                             id="form6Example1"
@@ -1544,7 +1542,7 @@
                         </div>
                       </div>
                       <div class="col">
-                        <div class="form-outline">
+                        <div class="form-outline" data-mdb-input-init>
                           <input
                             type="text"
                             id="form6Example2"
@@ -1591,7 +1589,7 @@
                     </div>
 
                     <!-- Text input -->
-                    <div class="form-outline mb-4">
+                    <div class="form-outline mb-4" data-mdb-input-init>
                       <input
                         type="text"
                         id="form6Example3"
@@ -1636,7 +1634,7 @@
                     </div>
 
                     <!-- Text input -->
-                    <div class="form-outline mb-4">
+                    <div class="form-outline mb-4" data-mdb-input-init>
                       <input
                         type="text"
                         id="form6Example4"
@@ -1681,7 +1679,7 @@
                     </div>
 
                     <!-- Email input -->
-                    <div class="form-outline mb-4">
+                    <div class="form-outline mb-4" data-mdb-input-init>
                       <input
                         type="email"
                         id="form6Example5"
@@ -1726,7 +1724,7 @@
                     </div>
 
                     <!-- Number input -->
-                    <div class="form-outline mb-4">
+                    <div class="form-outline mb-4" data-mdb-input-init>
                       <input
                         type="number"
                         id="form6Example6"
@@ -1763,7 +1761,7 @@
                     </div>
 
                     <!-- Message input -->
-                    <div class="form-outline mb-4">
+                    <div class="form-outline mb-4" data-mdb-input-init>
                       <textarea
                         class="form-control"
                         id="form6Example7"
@@ -1816,7 +1814,7 @@
                     <!-- Submit button -->
                     <button
                       type="submit"
-                      class="btn btn-primary btn-block mb-4"
+                      class="btn btn-primary btn-block mb-4" data-mdb-ripple-init
                     >
                       Place order
                     </button>
@@ -1828,12 +1826,12 @@
               <div class="col-md-4 mb-4">
                 <!--Section: Summary-->
                 <section>
-                  <button type="button" class="btn btn-success btn-block mb-4">
+                  <button type="button" class="btn btn-success btn-block mb-4" data-mdb-ripple-init>
                     Place order
                   </button>
 
                   <div class="card">
-                    <div class="card-header bg-white text-center py-3">
+                    <div class="card-header text-center py-3">
                       <h5 class="mb-0 fw-bold">Summary</h5>
                     </div>
 
@@ -1846,7 +1844,7 @@
                     </div>
 
                     <div
-                      class="card-footer bg-white d-flex justify-content-between py-3"
+                      class="card-footer  d-flex justify-content-between py-3"
                     >
                       <strong>Total amount:</strong>
                       <strong>$199</strong>
@@ -1866,7 +1864,7 @@
             <div class="text-center">
               <h4><strong>Progress</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/progress/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -1997,12 +1995,12 @@
 
           <hr class="my-5" />
 
-          <!--Section: Sppinners-->
+          <!--Section: Spinners-->
           <section class="text-center">
             <div class="text-center">
               <h4><strong>Spinners</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/spinners/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -2041,7 +2039,7 @@
                 <br />
                 <br />
 
-                <button class="btn btn-primary" type="button" disabled="">
+                <button class="btn btn-primary" type="button" disabled="" data-mdb-ripple-init>
                   <span
                     class="spinner-border spinner-border-sm"
                     role="status"
@@ -2049,7 +2047,7 @@
                   ></span>
                   <span class="visually-hidden">Loading...</span>
                 </button>
-                <button class="btn btn-primary" type="button" disabled="">
+                <button class="btn btn-primary" type="button" disabled="" data-mdb-ripple-init>
                   <span
                     class="spinner-border spinner-border-sm"
                     role="status"
@@ -2090,7 +2088,7 @@
                 <br />
                 <br />
 
-                <button class="btn btn-primary" type="button" disabled="">
+                <button class="btn btn-primary" type="button" disabled="" data-mdb-ripple-init>
                   <span
                     class="spinner-grow spinner-grow-sm"
                     role="status"
@@ -2098,7 +2096,7 @@
                   ></span>
                   <span class="visually-hidden">Loading...</span>
                 </button>
-                <button class="btn btn-primary" type="button" disabled="">
+                <button class="btn btn-primary" type="button" disabled="" data-mdb-ripple-init>
                   <span
                     class="spinner-grow spinner-grow-sm"
                     role="status"
@@ -2120,7 +2118,7 @@
             <div class="text-center">
               <h4><strong>Alerts</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/alerts/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -2131,28 +2129,28 @@
             <div class="row">
               <!--Grid column-->
               <div class="col-md-6 mb-4">
-                <div class="alert alert-primary" role="alert">
+                <div class="alert alert-primary" role="alert" data-mdb-alert-init >
                   A simple primary alert—check it out!
                 </div>
-                <div class="alert alert-secondary" role="alert">
+                <div class="alert alert-secondary" role="alert" data-mdb-alert-init >
                   A simple secondary alert—check it out!
                 </div>
-                <div class="alert alert-success" role="alert">
+                <div class="alert alert-success" role="alert" data-mdb-alert-init >
                   A simple success alert—check it out!
                 </div>
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-danger" role="alert" data-mdb-alert-init >
                   A simple danger alert—check it out!
                 </div>
-                <div class="alert alert-warning" role="alert">
+                <div class="alert alert-warning" role="alert" data-mdb-alert-init >
                   A simple warning alert—check it out!
                 </div>
-                <div class="alert alert-info" role="alert">
+                <div class="alert alert-info" role="alert" data-mdb-alert-init >
                   A simple info alert—check it out!
                 </div>
-                <div class="alert alert-light" role="alert">
+                <div class="alert alert-light" role="alert" data-mdb-alert-init >
                   A simple light alert—check it out!
                 </div>
-                <div class="alert alert-dark" role="alert">
+                <div class="alert alert-dark" role="alert" data-mdb-alert-init >
                   A simple dark alert—check it out!
                 </div>
               </div>
@@ -2162,7 +2160,7 @@
               <div class="col-md-6 mb-4">
                 <div
                   class="alert alert-warning alert-dismissible fade show"
-                  role="alert"
+                  role="alert" data-mdb-alert-init 
                 >
                   <strong>Holy guacamole!</strong> You should check in on some
                   of those fields below.
@@ -2174,7 +2172,7 @@
                   ></button>
                 </div>
 
-                <div class="alert alert-success" role="alert">
+                <div class="alert alert-success" role="alert" data-mdb-alert-init >
                   <h4 class="alert-heading">Well done!</h4>
                   <p>
                     Aww yeah, you successfully read this important alert
@@ -2202,7 +2200,7 @@
             <div class="text-center">
               <h4><strong>Badges</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/badges/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -2277,7 +2275,7 @@
                 <br />
                 <br />
 
-                <button type="button" class="btn btn-primary">
+                <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                   Notifications<span class="badge bg-danger ms-2">8</span>
                 </button>
 
@@ -2306,7 +2304,7 @@
             <div class="text-center">
               <h4><strong>Notes &amp; typography</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/content-styles/typography/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -2453,7 +2451,7 @@
             <div class="text-center">
               <h4><strong>Button group</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/button-group/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -2474,22 +2472,22 @@
                     role="group"
                     aria-label="First group"
                   >
-                    <button type="button" class="btn btn-primary">1</button>
-                    <button type="button" class="btn btn-primary">2</button>
-                    <button type="button" class="btn btn-primary">3</button>
-                    <button type="button" class="btn btn-primary">4</button>
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>1</button>
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>2</button>
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>3</button>
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>4</button>
                   </div>
                   <div
                     class="btn-group me-2"
                     role="group"
                     aria-label="Second group"
                   >
-                    <button type="button" class="btn btn-primary">5</button>
-                    <button type="button" class="btn btn-primary">6</button>
-                    <button type="button" class="btn btn-primary">7</button>
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>5</button>
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>6</button>
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>7</button>
                   </div>
                   <div class="btn-group" role="group" aria-label="Third group">
-                    <button type="button" class="btn btn-primary">8</button>
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>8</button>
                   </div>
                 </div>
 
@@ -2502,9 +2500,9 @@
                   role="group"
                   aria-label="Basic example"
                 >
-                  <button type="button" class="btn btn-primary">Left</button>
-                  <button type="button" class="btn btn-primary">Middle</button>
-                  <button type="button" class="btn btn-primary">Right</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>Left</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>Middle</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>Right</button>
                 </div>
 
                 <br />
@@ -2512,9 +2510,9 @@
 
                 <!-- Standard -->
                 <div class="btn-group" role="group" aria-label="Basic example">
-                  <button type="button" class="btn btn-primary">Left</button>
-                  <button type="button" class="btn btn-primary">Middle</button>
-                  <button type="button" class="btn btn-primary">Right</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>Left</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>Middle</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>Right</button>
                 </div>
 
                 <br />
@@ -2526,9 +2524,9 @@
                   role="group"
                   aria-label="Basic example"
                 >
-                  <button type="button" class="btn btn-primary">Left</button>
-                  <button type="button" class="btn btn-primary">Middle</button>
-                  <button type="button" class="btn btn-primary">Right</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>Left</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>Middle</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>Right</button>
                 </div>
 
                 <br />
@@ -2539,15 +2537,15 @@
                   role="group"
                   aria-label="Button group with nested dropdown"
                 >
-                  <button type="button" class="btn btn-primary">1</button>
-                  <button type="button" class="btn btn-primary">2</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>1</button>
+                  <button type="button" class="btn btn-primary" data-mdb-ripple-init>2</button>
 
                   <div class="btn-group" role="group">
                     <button
                       id="btnGroupDrop1"
                       type="button"
-                      class="btn btn-primary dropdown-toggle"
-                      data-mdb-toggle="dropdown"
+                      class="btn btn-primary dropdown-toggle" data-mdb-ripple-init
+                      data-mdb-dropdown-init
                       aria-expanded="false"
                     >
                       Dropdown
@@ -2574,21 +2572,21 @@
                     <div class="btn-group shadow-0" role="group">
                       <button
                         type="button"
-                        class="btn btn-light"
+                        class="btn btn-light" data-mdb-ripple-init
                         data-mdb-ripple-color="dark"
                       >
                         Left
                       </button>
                       <button
                         type="button"
-                        class="btn btn-light"
+                        class="btn btn-light" data-mdb-ripple-init
                         data-mdb-ripple-color="dark"
                       >
                         Middle
                       </button>
                       <button
                         type="button"
-                        class="btn btn-light"
+                        class="btn btn-light" data-mdb-ripple-init
                         data-mdb-ripple-color="dark"
                       >
                         Right
@@ -2601,21 +2599,21 @@
                     <div class="btn-group shadow-0" role="group">
                       <button
                         type="button"
-                        class="btn btn-link"
+                        class="btn btn-link" data-mdb-ripple-init
                         data-mdb-ripple-color="dark"
                       >
                         Left
                       </button>
                       <button
                         type="button"
-                        class="btn btn-link"
+                        class="btn btn-link" data-mdb-ripple-init
                         data-mdb-ripple-color="dark"
                       >
                         Middle
                       </button>
                       <button
                         type="button"
-                        class="btn btn-link"
+                        class="btn btn-link" data-mdb-ripple-init
                         data-mdb-ripple-color="dark"
                       >
                         Right
@@ -2626,13 +2624,13 @@
                     <br />
 
                     <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-secondary">
+                      <button type="button" class="btn btn-secondary" data-mdb-ripple-init>
                         Left
                       </button>
-                      <button type="button" class="btn btn-secondary">
+                      <button type="button" class="btn btn-secondary" data-mdb-ripple-init>
                         Middle
                       </button>
-                      <button type="button" class="btn btn-secondary">
+                      <button type="button" class="btn btn-secondary" data-mdb-ripple-init>
                         Right
                       </button>
                     </div>
@@ -2641,13 +2639,13 @@
                     <br />
 
                     <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-success">
+                      <button type="button" class="btn btn-success" data-mdb-ripple-init>
                         Left
                       </button>
-                      <button type="button" class="btn btn-success">
+                      <button type="button" class="btn btn-success" data-mdb-ripple-init>
                         Middle
                       </button>
-                      <button type="button" class="btn btn-success">
+                      <button type="button" class="btn btn-success" data-mdb-ripple-init>
                         Right
                       </button>
                     </div>
@@ -2656,11 +2654,11 @@
                     <br />
 
                     <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-danger">Left</button>
-                      <button type="button" class="btn btn-danger">
+                      <button type="button" class="btn btn-danger" data-mdb-ripple-init>Left</button>
+                      <button type="button" class="btn btn-danger" data-mdb-ripple-init>
                         Middle
                       </button>
-                      <button type="button" class="btn btn-danger">
+                      <button type="button" class="btn btn-danger" data-mdb-ripple-init>
                         Right
                       </button>
                     </div>
@@ -2669,13 +2667,13 @@
                     <br />
 
                     <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-warning">
+                      <button type="button" class="btn btn-warning" data-mdb-ripple-init>
                         Left
                       </button>
-                      <button type="button" class="btn btn-warning">
+                      <button type="button" class="btn btn-warning" data-mdb-ripple-init>
                         Middle
                       </button>
-                      <button type="button" class="btn btn-warning">
+                      <button type="button" class="btn btn-warning" data-mdb-ripple-init>
                         Right
                       </button>
                     </div>
@@ -2684,18 +2682,18 @@
                     <br />
 
                     <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-info">Left</button>
-                      <button type="button" class="btn btn-info">Middle</button>
-                      <button type="button" class="btn btn-info">Right</button>
+                      <button type="button" class="btn btn-info" data-mdb-ripple-init>Left</button>
+                      <button type="button" class="btn btn-info" data-mdb-ripple-init>Middle</button>
+                      <button type="button" class="btn btn-info" data-mdb-ripple-init>Right</button>
                     </div>
 
                     <br />
                     <br />
 
                     <div class="btn-group" role="group">
-                      <button type="button" class="btn btn-dark">Left</button>
-                      <button type="button" class="btn btn-dark">Middle</button>
-                      <button type="button" class="btn btn-dark">Right</button>
+                      <button type="button" class="btn btn-dark" data-mdb-ripple-init>Left</button>
+                      <button type="button" class="btn btn-dark" data-mdb-ripple-init>Middle</button>
+                      <button type="button" class="btn btn-dark" data-mdb-ripple-init>Right</button>
                     </div>
                   </div>
                   <!--Grid column-->
@@ -2707,22 +2705,22 @@
                       role="group"
                       aria-label="Vertical button group"
                     >
-                      <button type="button" class="btn btn-primary">
+                      <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                         Button
                       </button>
-                      <button type="button" class="btn btn-primary">
+                      <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                         Button
                       </button>
-                      <button type="button" class="btn btn-primary">
+                      <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                         Button
                       </button>
-                      <button type="button" class="btn btn-primary">
+                      <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                         Button
                       </button>
-                      <button type="button" class="btn btn-primary">
+                      <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                         Button
                       </button>
-                      <button type="button" class="btn btn-primary">
+                      <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                         Button
                       </button>
                     </div>
@@ -2744,7 +2742,7 @@
             <div class="text-center">
               <h4><strong>Collapse</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/collapse/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -2757,8 +2755,8 @@
               <div class="col-md-6 mb-4">
                 <!-- Buttons trigger collapse -->
                 <a
-                  class="btn btn-primary"
-                  data-mdb-toggle="collapse"
+                  class="btn btn-primary" data-mdb-ripple-init
+                  data-mdb-collapse-init
                   href="#collapseExample"
                   role="button"
                   aria-expanded="false"
@@ -2767,9 +2765,9 @@
                   Link with href
                 </a>
                 <button
-                  class="btn btn-primary"
+                  class="btn btn-primary" data-mdb-ripple-init
                   type="button"
-                  data-mdb-toggle="collapse"
+                  data-mdb-collapse-init
                   data-mdb-target="#collapseExample"
                   aria-expanded="false"
                   aria-controls="collapseExample"
@@ -2795,9 +2793,9 @@
                   <div id="headingOne">
                     <h2>
                       <button
-                        class="btn btn-link btn-block text-start ps-3"
+                        class="btn btn-link btn-block text-start ps-3" data-mdb-ripple-init
                         type="button"
-                        data-mdb-toggle="collapse"
+                        data-mdb-collapse-init
                         data-mdb-target="#collapseOne"
                         aria-expanded="true"
                         aria-controls="collapseOne"
@@ -2831,9 +2829,9 @@
                   <div id="headingTwo">
                     <h2>
                       <button
-                        class="btn btn-link btn-block text-start ps-3 collapsed"
+                        class="btn btn-link btn-block text-start ps-3 collapsed" data-mdb-ripple-init
                         type="button"
-                        data-mdb-toggle="collapse"
+                        data-mdb-collapse-init
                         data-mdb-target="#collapseTwo"
                         aria-expanded="false"
                         aria-controls="collapseTwo"
@@ -2867,9 +2865,9 @@
                   <div id="headingThree">
                     <h2>
                       <button
-                        class="btn btn-link btn-block text-start ps-3 collapsed"
+                        class="btn btn-link btn-block text-start ps-3 collapsed" data-mdb-ripple-init
                         type="button"
-                        data-mdb-toggle="collapse"
+                        data-mdb-collapse-init
                         data-mdb-target="#collapseThree"
                         aria-expanded="false"
                         aria-controls="collapseThree"
@@ -2914,7 +2912,7 @@
             <div class="text-center">
               <h4><strong>Dropdowns</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/dropdowns/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -2925,8 +2923,8 @@
             <div class="btn-group">
               <button
                 type="button"
-                class="btn btn-primary dropdown-toggle"
-                data-mdb-toggle="dropdown"
+                class="btn btn-primary dropdown-toggle" data-mdb-ripple-init
+                data-mdb-dropdown-init
                 aria-expanded="false"
               >
                 Action
@@ -2948,8 +2946,8 @@
             <div class="btn-group">
               <button
                 type="button"
-                class="btn btn-secondary dropdown-toggle"
-                data-mdb-toggle="dropdown"
+                class="btn btn-secondary dropdown-toggle" data-mdb-ripple-init
+                data-mdb-dropdown-init
                 aria-expanded="false"
               >
                 Action
@@ -2971,8 +2969,8 @@
             <div class="btn-group">
               <button
                 type="button"
-                class="btn btn-success dropdown-toggle"
-                data-mdb-toggle="dropdown"
+                class="btn btn-success dropdown-toggle" data-mdb-ripple-init
+                data-mdb-dropdown-init
                 aria-expanded="false"
               >
                 Action
@@ -2994,8 +2992,8 @@
             <div class="btn-group">
               <button
                 type="button"
-                class="btn btn-info dropdown-toggle"
-                data-mdb-toggle="dropdown"
+                class="btn btn-info dropdown-toggle" data-mdb-ripple-init
+                data-mdb-dropdown-init
                 aria-expanded="false"
               >
                 Action
@@ -3017,8 +3015,8 @@
             <div class="btn-group">
               <button
                 type="button"
-                class="btn btn-warning dropdown-toggle"
-                data-mdb-toggle="dropdown"
+                class="btn btn-warning dropdown-toggle" data-mdb-ripple-init
+                data-mdb-dropdown-init
                 aria-expanded="false"
               >
                 Action
@@ -3040,8 +3038,8 @@
             <div class="btn-group">
               <button
                 type="button"
-                class="btn btn-danger dropdown-toggle"
-                data-mdb-toggle="dropdown"
+                class="btn btn-danger dropdown-toggle" data-mdb-ripple-init
+                data-mdb-dropdown-init
                 aria-expanded="false"
               >
                 Action
@@ -3063,8 +3061,8 @@
             <div class="btn-group">
               <button
                 type="button"
-                class="btn btn-dark dropdown-toggle"
-                data-mdb-toggle="dropdown"
+                class="btn btn-dark dropdown-toggle" data-mdb-ripple-init
+                data-mdb-dropdown-init
                 aria-expanded="false"
               >
                 Action
@@ -3086,8 +3084,8 @@
             <div class="btn-group shadow-0">
               <button
                 type="button"
-                class="btn btn-light dropdown-toggle"
-                data-mdb-toggle="dropdown"
+                class="btn btn-light dropdown-toggle" data-mdb-ripple-init
+                data-mdb-dropdown-init
                 aria-expanded="false"
               >
                 Action
@@ -3109,8 +3107,8 @@
             <div class="btn-group shadow-0">
               <button
                 type="button"
-                class="btn btn-link dropdown-toggle"
-                data-mdb-toggle="dropdown"
+                class="btn btn-link dropdown-toggle" data-mdb-ripple-init
+                data-mdb-dropdown-init
                 aria-expanded="false"
               >
                 Action
@@ -3137,7 +3135,7 @@
             <div class="text-center">
               <h4><strong>Modal</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/modal/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -3148,8 +3146,8 @@
               <!-- Button trigger modal -->
               <button
                 type="button"
-                class="btn btn-primary"
-                data-mdb-toggle="modal"
+                class="btn btn-primary" data-mdb-ripple-init
+                data-mdb-modal-init
                 data-mdb-target="#exampleModal"
               >
                 Launch demo modal
@@ -3180,12 +3178,12 @@
                     <div class="modal-footer">
                       <button
                         type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-secondary" data-mdb-ripple-init
                         data-mdb-dismiss="modal"
                       >
                         Close
                       </button>
-                      <button type="button" class="btn btn-primary">
+                      <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                         Save changes
                       </button>
                     </div>
@@ -3219,12 +3217,12 @@
                   <div class="modal-footer">
                     <button
                       type="button"
-                      class="btn btn-secondary"
+                      class="btn btn-secondary" data-mdb-ripple-init
                       data-mdb-dismiss="modal"
                     >
                       Close
                     </button>
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>
                       Save changes
                     </button>
                   </div>
@@ -3241,7 +3239,7 @@
             <div class="text-center">
               <h4><strong>Toasts</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/toasts/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -3253,7 +3251,7 @@
               <!--Grid column-->
               <div class="col-md-3 mb-4">
                 <div
-                  class="toast fade show"
+                  class="toast fade show" data-mdb-toast-init
                   role="alert"
                   aria-live="assertive"
                   aria-atomic="true"
@@ -3283,7 +3281,7 @@
               <div class="col-lg-3 col-md-6 mb-4">
                 <!-- Info toast -->
                 <div
-                  class="toast fade show bg-info text-white"
+                  class="toast fade show bg-info text-white" data-mdb-toast-init
                   role="alert"
                   aria-live="assertive"
                   aria-atomic="true"
@@ -3310,7 +3308,7 @@
               <div class="col-lg-3 col-md-6 mb-4">
                 <!-- Warning toast -->
                 <div
-                  class="toast fade show bg-warning text-white"
+                  class="toast fade show bg-warning text-white" data-mdb-toast-init
                   role="alert"
                   aria-live="assertive"
                   aria-atomic="true"
@@ -3337,7 +3335,7 @@
               <div class="col-lg-3 col-md-6 mb-4">
                 <!-- Success toast -->
                 <div
-                  class="toast fade show bg-success text-white"
+                  class="toast fade show bg-success text-white" data-mdb-toast-init
                   role="alert"
                   aria-live="assertive"
                   aria-atomic="true"
@@ -3364,7 +3362,7 @@
               <div class="col-lg-3 col-md-6 mb-4">
                 <!-- Danger toast -->
                 <div
-                  class="toast fade show bg-danger text-white"
+                  class="toast fade show bg-danger text-white" data-mdb-toast-init
                   role="alert"
                   aria-live="assertive"
                   aria-atomic="true"
@@ -3398,7 +3396,7 @@
             <div class="text-center">
               <h4><strong>Tooltips</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/tooltips/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -3407,8 +3405,8 @@
 
             <button
               type="button"
-              class="btn btn-secondary m-1"
-              data-mdb-toggle="tooltip"
+              class="btn btn-secondary m-1" data-mdb-ripple-init
+              data-mdb-tooltip-init
               data-mdb-placement="top"
               title=""
               data-mdb-original-title="Tooltip on top"
@@ -3417,8 +3415,8 @@
             </button>
             <button
               type="button"
-              class="btn btn-secondary m-1"
-              data-mdb-toggle="tooltip"
+              class="btn btn-secondary m-1" data-mdb-ripple-init
+              data-mdb-tooltip-init
               data-mdb-placement="right"
               title=""
               data-mdb-original-title="Tooltip on right"
@@ -3427,8 +3425,8 @@
             </button>
             <button
               type="button"
-              class="btn btn-secondary m-1"
-              data-mdb-toggle="tooltip"
+              class="btn btn-secondary m-1" data-mdb-ripple-init
+              data-mdb-tooltip-init
               data-mdb-placement="bottom"
               title=""
               data-mdb-original-title="Tooltip on bottom"
@@ -3437,8 +3435,8 @@
             </button>
             <button
               type="button"
-              class="btn btn-secondary m-1"
-              data-mdb-toggle="tooltip"
+              class="btn btn-secondary m-1" data-mdb-ripple-init
+              data-mdb-tooltip-init
               data-mdb-placement="left"
               title=""
               data-mdb-original-title="Tooltip on left"
@@ -3455,7 +3453,7 @@
             <div class="text-center">
               <h4><strong>Popovers</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/components/popovers/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -3464,9 +3462,9 @@
 
             <button
               type="button"
-              class="btn btn-success m-1"
+              class="btn btn-success m-1" data-mdb-ripple-init
               data-mdb-container="body"
-              data-mdb-toggle="popover"
+              data-mdb-popover-init
               data-mdb-placement="top"
               data-mdb-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
               data-mdb-original-title=""
@@ -3477,9 +3475,9 @@
 
             <button
               type="button"
-              class="btn btn-success m-1"
+              class="btn btn-success m-1" data-mdb-ripple-init
               data-mdb-container="body"
-              data-mdb-toggle="popover"
+              data-mdb-popover-init
               data-mdb-placement="right"
               data-mdb-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
               data-mdb-original-title=""
@@ -3490,9 +3488,9 @@
 
             <button
               type="button"
-              class="btn btn-success m-1"
+              class="btn btn-success m-1" data-mdb-ripple-init
               data-mdb-container="body"
-              data-mdb-toggle="popover"
+              data-mdb-popover-init
               data-mdb-placement="bottom"
               data-mdb-content="Vivamus
                                       sagittis lacus vel augue laoreet rutrum faucibus."
@@ -3504,9 +3502,9 @@
 
             <button
               type="button"
-              class="btn btn-success m-1"
+              class="btn btn-success m-1" data-mdb-ripple-init
               data-mdb-container="body"
-              data-mdb-toggle="popover"
+              data-mdb-popover-init
               data-mdb-placement="left"
               data-mdb-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
               data-mdb-original-title=""
@@ -3524,14 +3522,14 @@
             <div class="text-center">
               <h4><strong>Navbars</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/navigation/navbar/"
                 role="button"
                 >Docs &amp; more examples</a
               >
             </div>
 
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" data-mdb-theme="light">
               <!-- Container wrapper -->
               <div class="container-fluid">
                 <!-- Navbar brand -->
@@ -3541,7 +3539,7 @@
                 <button
                   class="navbar-toggler"
                   type="button"
-                  data-mdb-toggle="collapse"
+                  data-mdb-collapse-init
                   data-mdb-target="#navbarSupportedContent"
                   aria-controls="navbarSupportedContent"
                   aria-expanded="false"
@@ -3552,7 +3550,7 @@
 
                 <!-- Collapsible wrapper -->
                 <div
-                  class="collapse navbar-collapse"
+                  class="collapse navbar-collapse text-black"
                   id="navbarSupportedContent"
                 >
                   <!-- Left links -->
@@ -3572,7 +3570,7 @@
                         href="#"
                         id="navbarDropdown"
                         role="button"
-                        data-mdb-toggle="dropdown"
+                        data-mdb-dropdown-init
                         aria-expanded="false"
                       >
                         Dropdown
@@ -3612,7 +3610,7 @@
                         href="#"
                         id="navbarDropdownMenuLink"
                         role="button"
-                        data-mdb-toggle="dropdown"
+                        data-mdb-dropdown-init
                         aria-expanded="false"
                       >
                         <i class="fas fa-bell"></i>
@@ -3648,7 +3646,7 @@
                       aria-label="Search"
                     />
                     <button
-                      class="btn btn-outline-primary"
+                      class="btn btn-outline-primary" data-mdb-ripple-init
                       type="button"
                       data-mdb-ripple-color="dark"
                     >
@@ -3669,7 +3667,7 @@
                 <button
                   class="navbar-toggler"
                   type="button"
-                  data-mdb-toggle="collapse"
+                  data-mdb-collapse-init
                   data-mdb-target="#navbarColor02"
                   aria-controls="navbarColor02"
                   aria-expanded="false"
@@ -3714,7 +3712,7 @@
                 <button
                   class="navbar-toggler"
                   type="button"
-                  data-mdb-toggle="collapse"
+                  data-mdb-collapse-init
                   data-mdb-target="#navbarColor02"
                   aria-controls="navbarColor02"
                   aria-expanded="false"
@@ -3757,7 +3755,7 @@
                         href="#"
                         id="navbarDropdown"
                         role="button"
-                        data-mdb-toggle="dropdown"
+                        data-mdb-dropdown-init
                         aria-expanded="false"
                       >
                         <i class="fas fa-user"></i>
@@ -3788,7 +3786,7 @@
             <br />
 
             <nav
-              class="navbar navbar-expand-lg navbar-light"
+              class="navbar navbar-expand-lg navbar-light" data-mdb-theme="light"
               style="background-color: #e3f2fd"
             >
               <div class="container-fluid">
@@ -3796,7 +3794,7 @@
                 <button
                   class="navbar-toggler"
                   type="button"
-                  data-mdb-toggle="collapse"
+                  data-mdb-collapse-init
                   data-mdb-target="#navbarColor02"
                   aria-controls="navbarColor02"
                   aria-expanded="false"
@@ -3828,10 +3826,10 @@
                         href="#"
                         id="navbarDropdown"
                         role="button"
-                        data-mdb-toggle="dropdown"
+                        data-mdb-dropdown-init
                         aria-expanded="false"
                       >
-                        <i class="united kingdom flag m-0"></i>
+                      <i class="flag flag-united-kingdom"></i>
                       </a>
                       <ul
                         class="dropdown-menu"
@@ -3839,7 +3837,7 @@
                       >
                         <li>
                           <a class="dropdown-item" href="#"
-                            ><i class="united kingdom flag"></i>English
+                            ><i class="flag flag-united-kingdom"></i>English
                             <i class="fa fa-check text-success ms-2"></i
                           ></a>
                         </li>
@@ -3848,42 +3846,42 @@
                         </li>
                         <li>
                           <a class="dropdown-item" href="#"
-                            ><i class="poland flag"></i>Polski</a
+                            ><i class="flag flag-poland"></i>Polski</a
                           >
                         </li>
                         <li>
                           <a class="dropdown-item" href="#"
-                            ><i class="china flag"></i>中文</a
+                            ><i class="flag flag-china"></i>中文</a
                           >
                         </li>
                         <li>
                           <a class="dropdown-item" href="#"
-                            ><i class="japan flag"></i>日本語</a
+                            ><i class="flag flag-japan"></i>日本語</a
                           >
                         </li>
                         <li>
                           <a class="dropdown-item" href="#"
-                            ><i class="germany flag"></i>Deutsch</a
+                            ><i class="flag flag-germany"></i>Deutsch</a
                           >
                         </li>
                         <li>
                           <a class="dropdown-item" href="#"
-                            ><i class="france flag"></i>Français</a
+                            ><i class="flag flag-france"></i>Français</a
                           >
                         </li>
                         <li>
                           <a class="dropdown-item" href="#"
-                            ><i class="spain flag"></i>Español</a
+                            ><i class="flag flag-spain"></i>Español</a
                           >
                         </li>
                         <li>
                           <a class="dropdown-item" href="#"
-                            ><i class="russia flag"></i>Русский</a
+                            ><i class="flag flag-russia"></i>Русский</a
                           >
                         </li>
                         <li>
                           <a class="dropdown-item" href="#"
-                            ><i class="portugal flag"></i>Português</a
+                            ><i class="flag flag-portugal"></i>Português</a
                           >
                         </li>
                       </ul>
@@ -3895,7 +3893,7 @@
                         href="#"
                         id="navbarDropdownMenuLink"
                         role="button"
-                        data-mdb-toggle="dropdown"
+                        data-mdb-dropdown-init
                         aria-expanded="false"
                       >
                         <img
@@ -3931,7 +3929,7 @@
             <div class="text-center">
               <h4><strong>Headers</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/navigation/headers/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -3941,12 +3939,12 @@
             <section class="border p-4 text-center mb-4">
               <header>
                 <!-- Navbar -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-white">
+                <nav class="navbar navbar-expand-lg">
                   <div class="container-fluid">
                     <button
                       class="navbar-toggler"
                       type="button"
-                      data-mdb-toggle="collapse"
+                      data-mdb-collapse-init
                       data-mdb-target="#navbarExample01"
                       aria-controls="navbarExample01"
                       aria-expanded="false"
@@ -3977,10 +3975,10 @@
                 <!-- Navbar -->
 
                 <!-- Jumbotron -->
-                <div class="p-5 text-center bg-light">
+                <div class="p-5 text-center bg-body-tertiary">
                   <h1 class="mb-3">Heading</h1>
                   <h4 class="mb-3">Subheading</h4>
-                  <a class="btn btn-primary" href="" role="button"
+                  <a class="btn btn-primary" href="" role="button" data-mdb-ripple-init
                     >Call to action</a
                   >
                 </div>
@@ -3991,12 +3989,12 @@
             <section class="border p-4 text-center mb-4">
               <header>
                 <!-- Navbar -->
-                <nav class="navbar navbar-expand-lg navbar-light bg-white">
+                <nav class="navbar navbar-expand-lg navbar-light ">
                   <div class="container-fluid">
                     <button
                       class="navbar-toggler"
                       type="button"
-                      data-mdb-toggle="collapse"
+                      data-mdb-collapse-init
                       data-mdb-target="#navbarExample01"
                       aria-controls="navbarExample01"
                       aria-expanded="false"
@@ -4045,7 +4043,7 @@
                         <h1 class="mb-3">Heading</h1>
                         <h4 class="mb-3">Subheading</h4>
                         <a
-                          class="btn btn-outline-light btn-lg"
+                          class="btn btn-outline-light btn-lg" data-mdb-ripple-init
                           href="#!"
                           role="button"
                           >Call to action</a
@@ -4067,7 +4065,7 @@
             <div class="text-center">
               <h4><strong>Scrollspy</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/navigation/scrollspy/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -4085,7 +4083,7 @@
               <div class="row">
                 <div class="col-md-8">
                   <div
-                    data-mdb-spy="scroll"
+                    data-mdb-scrollspy-init
                     data-mdb-target="#scrollspy"
                     data-mdb-offset="0"
                     class="scrollspy-example"
@@ -4239,14 +4237,14 @@
             <div class="text-center">
               <h4><strong>Footer</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/navigation/footer/"
                 role="button"
                 >Docs &amp; more examples</a
               >
             </div>
 
-            <footer class="bg-primary text-white">
+            <footer class="bg-primary text-white text-center text-lg-start">
               <!-- Grid container -->
               <div class="container p-4">
                 <!--Grid row-->
@@ -4256,10 +4254,9 @@
                     <h5 class="text-uppercase">Footer Content</h5>
 
                     <p>
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Iste atque ea quis molestias. Fugiat pariatur maxime quis
-                      culpa corporis vitae repudiandae aliquam voluptatem
-                      veniam, est atque cumque eum delectus sint!
+                      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste atque ea quis
+                      molestias. Fugiat pariatur maxime quis culpa corporis vitae repudiandae aliquam
+                      voluptatem veniam, est atque cumque eum delectus sint!
                     </p>
                   </div>
                   <!--Grid column-->
@@ -4268,7 +4265,7 @@
                   <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
                     <h5 class="text-uppercase">Links</h5>
 
-                    <ul class="list-unstyled">
+                    <ul class="list-unstyled mb-0">
                       <li>
                         <a href="#!" class="text-white">Link 1</a>
                       </li>
@@ -4287,7 +4284,7 @@
 
                   <!--Grid column-->
                   <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase">Links</h5>
+                    <h5 class="text-uppercase mb-0">Links</h5>
 
                     <ul class="list-unstyled">
                       <li>
@@ -4311,30 +4308,24 @@
               <!-- Grid container -->
 
               <!-- Copyright -->
-              <div
-                class="text-center p-3"
-                style="
-                  background-color: rgba(0, 0, 0, 0.2);
-                  color: rgba(255, 255, 255, 0.6);
-                "
-              >
+              <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
                 © 2020 Copyright:
-                <a class="text-white" href="https://mdbootstrap.com/">
-                  MDBootstrap.com</a
-                >
+                <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a>
               </div>
               <!-- Copyright -->
             </footer>
 
             <br />
 
-            <footer class="bg-light text-center text-lg-start">
+            <footer class="bg-body-tertiary text-center">
               <!-- Grid container -->
               <div class="container p-4 pb-0">
+                <!-- Section: Form -->
+                <section class="">
                 <form action="">
                   <!--Grid row-->
-                  <div class="row">
-                    <!--Grid column-->
+                    <div class="row d-flex justify-content-center">
+                      <!--Grid column-->
                     <div class="col-auto mb-4 mb-md-0">
                       <p class="pt-2">
                         <strong>Sign up for our newsletter</strong>
@@ -4343,8 +4334,8 @@
                     <!--Grid column-->
 
                     <!--Grid column-->
-                    <div class="col-md-5 col-12 mb-4 mb-md-0">
-                      <!-- Email input -->
+                      <div class="col-md-5 col-12">
+                        <!-- Email input -->
                       <div class="form-outline mb-4">
                         <input
                           type="email"
@@ -4381,8 +4372,8 @@
                     <!--Grid column-->
 
                     <!--Grid column-->
-                    <div class="col-auto mb-4 mb-md-0">
-                      <!-- Submit button -->
+                      <div class="col-auto">
+                        <!-- Submit button -->
                       <button type="submit" class="btn btn-primary mb-4">
                         Subscribe
                       </button>
@@ -4391,18 +4382,15 @@
                   </div>
                   <!--Grid row-->
                 </form>
+                </section>
+                <!-- Section: Form -->
               </div>
               <!-- Grid container -->
-
+            
               <!-- Copyright -->
-              <div
-                class="text-center p-3"
-                style="background-color: rgba(0, 0, 0, 0.2)"
-              >
+              <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
                 © 2020 Copyright:
-                <a class="text-dark" href="https://mdbootstrap.com/"
-                  >MDBootstrap.com</a
-                >
+                <a class="text-body" href="https://mdbootstrap.com/">MDBootstrap.com</a>
               </div>
               <!-- Copyright -->
             </footer>
@@ -4416,7 +4404,7 @@
             <div class="text-center">
               <h4><strong>Breadcrumbs</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/navigation/breadcrumb/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -4446,15 +4434,13 @@
               </ol>
             </nav>
 
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <nav data-mdb-navbar-init class="navbar navbar-expand-lg bg-body-tertiary">
               <div class="container-fluid">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                     <li class="breadcrumb-item"><a href="#">Library</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                      <a href="#">Data</a>
-                    </li>
+                    <li class="breadcrumb-item active" aria-current="page"><a href="#">Data</a></li>
                   </ol>
                 </nav>
               </div>
@@ -4469,7 +4455,7 @@
             <div class="text-center">
               <h4><strong>Pagination</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/navigation/pagination/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -4575,7 +4561,7 @@
             <div class="text-center">
               <h4><strong>Pills</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/navigation/pills/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -4592,7 +4578,7 @@
                 <a
                   class="nav-link active"
                   id="ex-3-tab-1"
-                  data-mdb-toggle="pill"
+                  data-mdb-pill-init
                   href="#ex-3-pills-1"
                   role="tab"
                   aria-controls="pills-1"
@@ -4604,7 +4590,7 @@
                 <a
                   class="nav-link"
                   id="ex-3-tab-2"
-                  data-mdb-toggle="pill"
+                  data-mdb-pill-init
                   href="#ex-3-pills-2"
                   role="tab"
                   aria-controls="pills-2"
@@ -4616,7 +4602,7 @@
                 <a
                   class="nav-link"
                   id="ex-3-tab-3"
-                  data-mdb-toggle="pill"
+                  data-mdb-pill-init
                   href="#ex-3-pills-3"
                   role="tab"
                   aria-controls="pills-3"
@@ -4681,7 +4667,7 @@
             <div class="text-center">
               <h4><strong>Tabs</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/navigation/tabs/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -4694,7 +4680,7 @@
                 <a
                   class="nav-link active"
                   id="ex-2-tab-1"
-                  data-mdb-toggle="pill"
+                  data-mdb-tab-init
                   href="#ex-2-tabs-1"
                   role="tab"
                   aria-controls="pills-1"
@@ -4706,7 +4692,7 @@
                 <a
                   class="nav-link"
                   id="ex-2-tab-2"
-                  data-mdb-toggle="pill"
+                  data-mdb-tab-init
                   href="#ex-2-tabs-2"
                   role="tab"
                   aria-controls="pills-2"
@@ -4718,7 +4704,7 @@
                 <a
                   class="nav-link"
                   id="ex-2-tab-3"
-                  data-mdb-toggle="pill"
+                  data-mdb-tab-init
                   href="#ex-2-tabs-3"
                   role="tab"
                   aria-controls="pills-3"
@@ -4783,7 +4769,7 @@
             <div class="text-center">
               <h4><strong>Tables</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/data/tables/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -4829,7 +4815,7 @@
             <div class="text-center">
               <h4><strong>Hover effects</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/content-styles/hover-effects/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -4841,7 +4827,7 @@
             <div class="row">
               <div class="col-lg-4 col-md-12 mb-4">
                 <div
-                  class="bg-image hover-overlay ripple shadow-1-strong rounded"
+                  class="bg-image hover-overlay shadow-1-strong rounded" data-mdb-ripple-init
                 >
                   <img
                     src="https://mdbootstrap.com/img/new/fluid/city/113.jpg"
@@ -4858,7 +4844,7 @@
 
               <div class="col-lg-4 col-md-6 mb-4">
                 <div
-                  class="bg-image hover-overlay ripple shadow-1-strong rounded"
+                  class="bg-image hover-overlay shadow-1-strong rounded" data-mdb-ripple-init
                 >
                   <img
                     src="https://mdbootstrap.com/img/new/fluid/city/113.jpg"
@@ -4898,7 +4884,7 @@
             <div class="text-center">
               <h4><strong>Masks</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/content-styles/masks/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -5061,7 +5047,7 @@
             <div class="text-center">
               <h4><strong>Shadows</strong></h4>
               <a
-                class="btn btn-primary mb-5"
+                class="btn btn-primary mb-5" data-mdb-ripple-init
                 href="https://mdbootstrap.com/docs/standard/content-styles/shadows/"
                 role="button"
                 >Docs &amp; more examples</a
@@ -5173,7 +5159,7 @@
     <!-- End your project here-->
 
     <!-- MDB -->
-    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <script type="text/javascript" src="js/mdb.umd.min.js"></script>
     <!-- Custom scripts -->
     <script type="text/javascript"></script>
   </body>

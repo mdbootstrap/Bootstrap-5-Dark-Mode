@@ -1,420 +1,313 @@
 /*!
- * Bootstrap tab.js v5.0.0-beta2 (https://getbootstrap.com/)
- * Copyright 2011-2021 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+ * Bootstrap tab.js v5.3.2 (https://getbootstrap.com/)
+ * Copyright 2011-2023 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined'
     ? (module.exports = factory(
-        require('./dom/data.js'),
+        require('./base-component.js'),
         require('./dom/event-handler.js'),
         require('./dom/selector-engine.js'),
-        require('./base-component.js')
+        require('./util/index.js')
       ))
     : typeof define === 'function' && define.amd
-    ? define([
-        './dom/data',
-        './dom/event-handler',
-        './dom/selector-engine',
-        './base-component',
-      ], factory)
+    ? define(
+        ['./base-component', './dom/event-handler', './dom/selector-engine', './util/index'],
+        factory
+      )
     : ((global = typeof globalThis !== 'undefined' ? globalThis : global || self),
-      (global.Tab = factory(global.Data, global.EventHandler, global.SelectorEngine, global.Base)));
-})(this, function (Data, EventHandler, SelectorEngine, BaseComponent) {
+      (global.Tab = factory(
+        global.BaseComponent,
+        global.EventHandler,
+        global.SelectorEngine,
+        global.Index
+      )));
+})(this, function (BaseComponent, EventHandler, SelectorEngine, index_js) {
   'use strict';
-
-  function _interopDefaultLegacy(e) {
-    return e && typeof e === 'object' && 'default' in e ? e : { default: e };
-  }
-
-  var Data__default = /*#__PURE__*/ _interopDefaultLegacy(Data);
-  var EventHandler__default = /*#__PURE__*/ _interopDefaultLegacy(EventHandler);
-  var SelectorEngine__default = /*#__PURE__*/ _interopDefaultLegacy(SelectorEngine);
-  var BaseComponent__default = /*#__PURE__*/ _interopDefaultLegacy(BaseComponent);
-
-  function _defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ('value' in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  function _createClass(Constructor, protoProps, staticProps) {
-    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) _defineProperties(Constructor, staticProps);
-    return Constructor;
-  }
-
-  function _inheritsLoose(subClass, superClass) {
-    subClass.prototype = Object.create(superClass.prototype);
-    subClass.prototype.constructor = subClass;
-
-    _setPrototypeOf(subClass, superClass);
-  }
-
-  function _setPrototypeOf(o, p) {
-    _setPrototypeOf =
-      Object.setPrototypeOf ||
-      function _setPrototypeOf(o, p) {
-        o.__proto__ = p;
-        return o;
-      };
-
-    return _setPrototypeOf(o, p);
-  }
 
   /**
    * --------------------------------------------------------------------------
-   * Bootstrap (v5.0.0-beta2): util/index.js
+   * Bootstrap tab.js
    * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
    * --------------------------------------------------------------------------
    */
-  var MILLISECONDS_MULTIPLIER = 1000;
-  var TRANSITION_END = 'transitionend'; // Shoutout AngusCroll (https://goo.gl/pxwQGp)
-
-  var getSelector = function getSelector(element) {
-    var selector = element.getAttribute('data-bs-target');
-
-    if (!selector || selector === '#') {
-      var hrefAttr = element.getAttribute('href'); // The only valid content that could double as a selector are IDs or classes,
-      // so everything starting with `#` or `.`. If a "real" URL is used as the selector,
-      // `document.querySelector` will rightfully complain it is invalid.
-      // See https://github.com/twbs/bootstrap/issues/32273
-
-      if (!hrefAttr || (!hrefAttr.includes('#') && !hrefAttr.startsWith('.'))) {
-        return null;
-      } // Just in case some CMS puts out a full URL with the anchor appended
-
-      if (hrefAttr.includes('#') && !hrefAttr.startsWith('#')) {
-        hrefAttr = '#' + hrefAttr.split('#')[1];
-      }
-
-      selector = hrefAttr && hrefAttr !== '#' ? hrefAttr.trim() : null;
-    }
-
-    return selector;
-  };
-
-  var getElementFromSelector = function getElementFromSelector(element) {
-    var selector = getSelector(element);
-    return selector ? document.querySelector(selector) : null;
-  };
-
-  var getTransitionDurationFromElement = function getTransitionDurationFromElement(element) {
-    if (!element) {
-      return 0;
-    } // Get transition-duration of the element
-
-    var _window$getComputedSt = window.getComputedStyle(element),
-      transitionDuration = _window$getComputedSt.transitionDuration,
-      transitionDelay = _window$getComputedSt.transitionDelay;
-
-    var floatTransitionDuration = Number.parseFloat(transitionDuration);
-    var floatTransitionDelay = Number.parseFloat(transitionDelay); // Return 0 if element or transition duration is not found
-
-    if (!floatTransitionDuration && !floatTransitionDelay) {
-      return 0;
-    } // If multiple durations are defined, take the first
-
-    transitionDuration = transitionDuration.split(',')[0];
-    transitionDelay = transitionDelay.split(',')[0];
-    return (
-      (Number.parseFloat(transitionDuration) + Number.parseFloat(transitionDelay)) *
-      MILLISECONDS_MULTIPLIER
-    );
-  };
-
-  var triggerTransitionEnd = function triggerTransitionEnd(element) {
-    element.dispatchEvent(new Event(TRANSITION_END));
-  };
-
-  var emulateTransitionEnd = function emulateTransitionEnd(element, duration) {
-    var called = false;
-    var durationPadding = 5;
-    var emulatedDuration = duration + durationPadding;
-
-    function listener() {
-      called = true;
-      element.removeEventListener(TRANSITION_END, listener);
-    }
-
-    element.addEventListener(TRANSITION_END, listener);
-    setTimeout(function () {
-      if (!called) {
-        triggerTransitionEnd(element);
-      }
-    }, emulatedDuration);
-  };
-
-  var reflow = function reflow(element) {
-    return element.offsetHeight;
-  };
-
-  var getjQuery = function getjQuery() {
-    var _window = window,
-      jQuery = _window.jQuery;
-
-    if (jQuery && !document.body.hasAttribute('data-bs-no-jquery')) {
-      return jQuery;
-    }
-
-    return null;
-  };
-
-  var onDOMContentLoaded = function onDOMContentLoaded(callback) {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', callback);
-    } else {
-      callback();
-    }
-  };
-
-  document.documentElement.dir === 'rtl';
-
-  var defineJQueryPlugin = function defineJQueryPlugin(name, plugin) {
-    onDOMContentLoaded(function () {
-      var $ = getjQuery();
-      /* istanbul ignore if */
-
-      if ($) {
-        var JQUERY_NO_CONFLICT = $.fn[name];
-        $.fn[name] = plugin.jQueryInterface;
-        $.fn[name].Constructor = plugin;
-
-        $.fn[name].noConflict = function () {
-          $.fn[name] = JQUERY_NO_CONFLICT;
-          return plugin.jQueryInterface;
-        };
-      }
-    });
-  };
 
   /**
-   * ------------------------------------------------------------------------
    * Constants
-   * ------------------------------------------------------------------------
    */
 
-  var NAME = 'tab';
-  var DATA_KEY = 'bs.tab';
-  var EVENT_KEY = '.' + DATA_KEY;
-  var DATA_API_KEY = '.data-api';
-  var EVENT_HIDE = 'hide' + EVENT_KEY;
-  var EVENT_HIDDEN = 'hidden' + EVENT_KEY;
-  var EVENT_SHOW = 'show' + EVENT_KEY;
-  var EVENT_SHOWN = 'shown' + EVENT_KEY;
-  var EVENT_CLICK_DATA_API = 'click' + EVENT_KEY + DATA_API_KEY;
-  var CLASS_NAME_DROPDOWN_MENU = 'dropdown-menu';
-  var CLASS_NAME_ACTIVE = 'active';
-  var CLASS_NAME_DISABLED = 'disabled';
-  var CLASS_NAME_FADE = 'fade';
-  var CLASS_NAME_SHOW = 'show';
-  var SELECTOR_DROPDOWN = '.dropdown';
-  var SELECTOR_NAV_LIST_GROUP = '.nav, .list-group';
-  var SELECTOR_ACTIVE = '.active';
-  var SELECTOR_ACTIVE_UL = ':scope > li > .active';
-  var SELECTOR_DATA_TOGGLE =
-    '[data-bs-toggle="tab"], [data-bs-toggle="pill"], [data-bs-toggle="list"]';
-  var SELECTOR_DROPDOWN_TOGGLE = '.dropdown-toggle';
-  var SELECTOR_DROPDOWN_ACTIVE_CHILD = ':scope > .dropdown-menu .active';
+  const NAME = 'tab';
+  const DATA_KEY = 'bs.tab';
+  const EVENT_KEY = `.${DATA_KEY}`;
+  const EVENT_HIDE = `hide${EVENT_KEY}`;
+  const EVENT_HIDDEN = `hidden${EVENT_KEY}`;
+  const EVENT_SHOW = `show${EVENT_KEY}`;
+  const EVENT_SHOWN = `shown${EVENT_KEY}`;
+  const EVENT_CLICK_DATA_API = `click${EVENT_KEY}`;
+  const EVENT_KEYDOWN = `keydown${EVENT_KEY}`;
+  const EVENT_LOAD_DATA_API = `load${EVENT_KEY}`;
+  const ARROW_LEFT_KEY = 'ArrowLeft';
+  const ARROW_RIGHT_KEY = 'ArrowRight';
+  const ARROW_UP_KEY = 'ArrowUp';
+  const ARROW_DOWN_KEY = 'ArrowDown';
+  const HOME_KEY = 'Home';
+  const END_KEY = 'End';
+  const CLASS_NAME_ACTIVE = 'active';
+  const CLASS_NAME_FADE = 'fade';
+  const CLASS_NAME_SHOW = 'show';
+  const CLASS_DROPDOWN = 'dropdown';
+  const SELECTOR_DROPDOWN_TOGGLE = '.dropdown-toggle';
+  const SELECTOR_DROPDOWN_MENU = '.dropdown-menu';
+  const NOT_SELECTOR_DROPDOWN_TOGGLE = `:not(${SELECTOR_DROPDOWN_TOGGLE})`;
+  const SELECTOR_TAB_PANEL = '.list-group, .nav, [role="tablist"]';
+  const SELECTOR_OUTER = '.nav-item, .list-group-item';
+  const SELECTOR_INNER = `.nav-link${NOT_SELECTOR_DROPDOWN_TOGGLE}, .list-group-item${NOT_SELECTOR_DROPDOWN_TOGGLE}, [role="tab"]${NOT_SELECTOR_DROPDOWN_TOGGLE}`;
+  const SELECTOR_DATA_TOGGLE =
+    '[data-bs-toggle="tab"], [data-bs-toggle="pill"], [data-bs-toggle="list"]'; // TODO: could only be `tab` in v6
+  const SELECTOR_INNER_ELEM = `${SELECTOR_INNER}, ${SELECTOR_DATA_TOGGLE}`;
+  const SELECTOR_DATA_TOGGLE_ACTIVE = `.${CLASS_NAME_ACTIVE}[data-bs-toggle="tab"], .${CLASS_NAME_ACTIVE}[data-bs-toggle="pill"], .${CLASS_NAME_ACTIVE}[data-bs-toggle="list"]`;
+
   /**
-   * ------------------------------------------------------------------------
-   * Class Definition
-   * ------------------------------------------------------------------------
+   * Class definition
    */
 
-  var Tab = /*#__PURE__*/ (function (_BaseComponent) {
-    _inheritsLoose(Tab, _BaseComponent);
+  class Tab extends BaseComponent {
+    constructor(element) {
+      super(element);
+      this._parent = this._element.closest(SELECTOR_TAB_PANEL);
+      if (!this._parent) {
+        return;
+        // TODO: should throw exception in v6
+        // throw new TypeError(`${element.outerHTML} has not a valid parent ${SELECTOR_INNER_ELEM}`)
+      }
 
-    function Tab() {
-      return _BaseComponent.apply(this, arguments) || this;
+      // Set up initial aria attributes
+      this._setInitialAttributes(this._parent, this._getChildren());
+      EventHandler.on(this._element, EVENT_KEYDOWN, (event) => this._keydown(event));
     }
 
-    var _proto = Tab.prototype;
+    // Getters
+    static get NAME() {
+      return NAME;
+    }
 
     // Public
-    _proto.show = function show() {
-      var _this = this;
+    show() {
+      // Shows this elem and deactivate the active sibling if exists
+      const innerElem = this._element;
+      if (this._elemIsActive(innerElem)) {
+        return;
+      }
 
+      // Search for active tab on same parent to deactivate it
+      const active = this._getActiveElem();
+      const hideEvent = active
+        ? EventHandler.trigger(active, EVENT_HIDE, {
+            relatedTarget: innerElem,
+          })
+        : null;
+      const showEvent = EventHandler.trigger(innerElem, EVENT_SHOW, {
+        relatedTarget: active,
+      });
+      if (showEvent.defaultPrevented || (hideEvent && hideEvent.defaultPrevented)) {
+        return;
+      }
+      this._deactivate(active, innerElem);
+      this._activate(innerElem, active);
+    }
+
+    // Private
+    _activate(element, relatedElem) {
+      if (!element) {
+        return;
+      }
+      element.classList.add(CLASS_NAME_ACTIVE);
+      this._activate(SelectorEngine.getElementFromSelector(element)); // Search and activate/show the proper section
+
+      const complete = () => {
+        if (element.getAttribute('role') !== 'tab') {
+          element.classList.add(CLASS_NAME_SHOW);
+          return;
+        }
+        element.removeAttribute('tabindex');
+        element.setAttribute('aria-selected', true);
+        this._toggleDropDown(element, true);
+        EventHandler.trigger(element, EVENT_SHOWN, {
+          relatedTarget: relatedElem,
+        });
+      };
+      this._queueCallback(complete, element, element.classList.contains(CLASS_NAME_FADE));
+    }
+    _deactivate(element, relatedElem) {
+      if (!element) {
+        return;
+      }
+      element.classList.remove(CLASS_NAME_ACTIVE);
+      element.blur();
+      this._deactivate(SelectorEngine.getElementFromSelector(element)); // Search and deactivate the shown section too
+
+      const complete = () => {
+        if (element.getAttribute('role') !== 'tab') {
+          element.classList.remove(CLASS_NAME_SHOW);
+          return;
+        }
+        element.setAttribute('aria-selected', false);
+        element.setAttribute('tabindex', '-1');
+        this._toggleDropDown(element, false);
+        EventHandler.trigger(element, EVENT_HIDDEN, {
+          relatedTarget: relatedElem,
+        });
+      };
+      this._queueCallback(complete, element, element.classList.contains(CLASS_NAME_FADE));
+    }
+    _keydown(event) {
       if (
-        (this._element.parentNode &&
-          this._element.parentNode.nodeType === Node.ELEMENT_NODE &&
-          this._element.classList.contains(CLASS_NAME_ACTIVE)) ||
-        this._element.classList.contains(CLASS_NAME_DISABLED)
+        ![
+          ARROW_LEFT_KEY,
+          ARROW_RIGHT_KEY,
+          ARROW_UP_KEY,
+          ARROW_DOWN_KEY,
+          HOME_KEY,
+          END_KEY,
+        ].includes(event.key)
       ) {
         return;
       }
-
-      var previous;
-      var target = getElementFromSelector(this._element);
-
-      var listElement = this._element.closest(SELECTOR_NAV_LIST_GROUP);
-
-      if (listElement) {
-        var itemSelector =
-          listElement.nodeName === 'UL' || listElement.nodeName === 'OL'
-            ? SELECTOR_ACTIVE_UL
-            : SELECTOR_ACTIVE;
-        previous = SelectorEngine__default['default'].find(itemSelector, listElement);
-        previous = previous[previous.length - 1];
+      event.stopPropagation(); // stopPropagation/preventDefault both added to support up/down keys without scrolling the page
+      event.preventDefault();
+      const children = this._getChildren().filter((element) => !index_js.isDisabled(element));
+      let nextActiveElement;
+      if ([HOME_KEY, END_KEY].includes(event.key)) {
+        nextActiveElement = children[event.key === HOME_KEY ? 0 : children.length - 1];
+      } else {
+        const isNext = [ARROW_RIGHT_KEY, ARROW_DOWN_KEY].includes(event.key);
+        nextActiveElement = index_js.getNextActiveElement(children, event.target, isNext, true);
       }
+      if (nextActiveElement) {
+        nextActiveElement.focus({
+          preventScroll: true,
+        });
+        Tab.getOrCreateInstance(nextActiveElement).show();
+      }
+    }
+    _getChildren() {
+      // collection of inner elements
+      return SelectorEngine.find(SELECTOR_INNER_ELEM, this._parent);
+    }
+    _getActiveElem() {
+      return this._getChildren().find((child) => this._elemIsActive(child)) || null;
+    }
+    _setInitialAttributes(parent, children) {
+      this._setAttributeIfNotExists(parent, 'role', 'tablist');
+      for (const child of children) {
+        this._setInitialAttributesOnChild(child);
+      }
+    }
+    _setInitialAttributesOnChild(child) {
+      child = this._getInnerElement(child);
+      const isActive = this._elemIsActive(child);
+      const outerElem = this._getOuterElement(child);
+      child.setAttribute('aria-selected', isActive);
+      if (outerElem !== child) {
+        this._setAttributeIfNotExists(outerElem, 'role', 'presentation');
+      }
+      if (!isActive) {
+        child.setAttribute('tabindex', '-1');
+      }
+      this._setAttributeIfNotExists(child, 'role', 'tab');
 
-      var hideEvent = previous
-        ? EventHandler__default['default'].trigger(previous, EVENT_HIDE, {
-            relatedTarget: this._element,
-          })
-        : null;
-      var showEvent = EventHandler__default['default'].trigger(this._element, EVENT_SHOW, {
-        relatedTarget: previous,
-      });
-
-      if (showEvent.defaultPrevented || (hideEvent !== null && hideEvent.defaultPrevented)) {
+      // set attributes to the related panel too
+      this._setInitialAttributesOnTargetPanel(child);
+    }
+    _setInitialAttributesOnTargetPanel(child) {
+      const target = SelectorEngine.getElementFromSelector(child);
+      if (!target) {
         return;
       }
-
-      this._activate(this._element, listElement);
-
-      var complete = function complete() {
-        EventHandler__default['default'].trigger(previous, EVENT_HIDDEN, {
-          relatedTarget: _this._element,
-        });
-        EventHandler__default['default'].trigger(_this._element, EVENT_SHOWN, {
-          relatedTarget: previous,
-        });
-      };
-
-      if (target) {
-        this._activate(target, target.parentNode, complete);
-      } else {
-        complete();
+      this._setAttributeIfNotExists(target, 'role', 'tabpanel');
+      if (child.id) {
+        this._setAttributeIfNotExists(target, 'aria-labelledby', `${child.id}`);
       }
-    }; // Private
-
-    _proto._activate = function _activate(element, container, callback) {
-      var _this2 = this;
-
-      var activeElements =
-        container && (container.nodeName === 'UL' || container.nodeName === 'OL')
-          ? SelectorEngine__default['default'].find(SELECTOR_ACTIVE_UL, container)
-          : SelectorEngine__default['default'].children(container, SELECTOR_ACTIVE);
-      var active = activeElements[0];
-      var isTransitioning = callback && active && active.classList.contains(CLASS_NAME_FADE);
-
-      var complete = function complete() {
-        return _this2._transitionComplete(element, active, callback);
-      };
-
-      if (active && isTransitioning) {
-        var transitionDuration = getTransitionDurationFromElement(active);
-        active.classList.remove(CLASS_NAME_SHOW);
-        EventHandler__default['default'].one(active, 'transitionend', complete);
-        emulateTransitionEnd(active, transitionDuration);
-      } else {
-        complete();
-      }
-    };
-
-    _proto._transitionComplete = function _transitionComplete(element, active, callback) {
-      if (active) {
-        active.classList.remove(CLASS_NAME_ACTIVE);
-        var dropdownChild = SelectorEngine__default['default'].findOne(
-          SELECTOR_DROPDOWN_ACTIVE_CHILD,
-          active.parentNode
-        );
-
-        if (dropdownChild) {
-          dropdownChild.classList.remove(CLASS_NAME_ACTIVE);
-        }
-
-        if (active.getAttribute('role') === 'tab') {
-          active.setAttribute('aria-selected', false);
-        }
-      }
-
-      element.classList.add(CLASS_NAME_ACTIVE);
-
-      if (element.getAttribute('role') === 'tab') {
-        element.setAttribute('aria-selected', true);
-      }
-
-      reflow(element);
-
-      if (element.classList.contains(CLASS_NAME_FADE)) {
-        element.classList.add(CLASS_NAME_SHOW);
-      }
-
-      if (element.parentNode && element.parentNode.classList.contains(CLASS_NAME_DROPDOWN_MENU)) {
-        var dropdownElement = element.closest(SELECTOR_DROPDOWN);
-
-        if (dropdownElement) {
-          SelectorEngine__default['default']
-            .find(SELECTOR_DROPDOWN_TOGGLE)
-            .forEach(function (dropdown) {
-              return dropdown.classList.add(CLASS_NAME_ACTIVE);
-            });
-        }
-
-        element.setAttribute('aria-expanded', true);
-      }
-
-      if (callback) {
-        callback();
-      }
-    }; // Static
-
-    Tab.jQueryInterface = function jQueryInterface(config) {
-      return this.each(function () {
-        var data = Data__default['default'].getData(this, DATA_KEY) || new Tab(this);
-
-        if (typeof config === 'string') {
-          if (typeof data[config] === 'undefined') {
-            throw new TypeError('No method named "' + config + '"');
-          }
-
-          data[config]();
-        }
-      });
-    };
-
-    _createClass(Tab, null, [
-      {
-        key: 'DATA_KEY',
-        // Getters
-        get: function get() {
-          return DATA_KEY;
-        },
-      },
-    ]);
-
-    return Tab;
-  })(BaseComponent__default['default']);
-  /**
-   * ------------------------------------------------------------------------
-   * Data Api implementation
-   * ------------------------------------------------------------------------
-   */
-
-  EventHandler__default['default'].on(
-    document,
-    EVENT_CLICK_DATA_API,
-    SELECTOR_DATA_TOGGLE,
-    function (event) {
-      event.preventDefault();
-      var data = Data__default['default'].getData(this, DATA_KEY) || new Tab(this);
-      data.show();
     }
-  );
+    _toggleDropDown(element, open) {
+      const outerElem = this._getOuterElement(element);
+      if (!outerElem.classList.contains(CLASS_DROPDOWN)) {
+        return;
+      }
+      const toggle = (selector, className) => {
+        const element = SelectorEngine.findOne(selector, outerElem);
+        if (element) {
+          element.classList.toggle(className, open);
+        }
+      };
+      toggle(SELECTOR_DROPDOWN_TOGGLE, CLASS_NAME_ACTIVE);
+      toggle(SELECTOR_DROPDOWN_MENU, CLASS_NAME_SHOW);
+      outerElem.setAttribute('aria-expanded', open);
+    }
+    _setAttributeIfNotExists(element, attribute, value) {
+      if (!element.hasAttribute(attribute)) {
+        element.setAttribute(attribute, value);
+      }
+    }
+    _elemIsActive(elem) {
+      return elem.classList.contains(CLASS_NAME_ACTIVE);
+    }
+
+    // Try to get the inner element (usually the .nav-link)
+    _getInnerElement(elem) {
+      return elem.matches(SELECTOR_INNER_ELEM)
+        ? elem
+        : SelectorEngine.findOne(SELECTOR_INNER_ELEM, elem);
+    }
+
+    // Try to get the outer element (usually the .nav-item)
+    _getOuterElement(elem) {
+      return elem.closest(SELECTOR_OUTER) || elem;
+    }
+
+    // Static
+    static jQueryInterface(config) {
+      return this.each(function () {
+        const data = Tab.getOrCreateInstance(this);
+        if (typeof config !== 'string') {
+          return;
+        }
+        if (data[config] === undefined || config.startsWith('_') || config === 'constructor') {
+          throw new TypeError(`No method named "${config}"`);
+        }
+        data[config]();
+      });
+    }
+  }
+
   /**
-   * ------------------------------------------------------------------------
-   * jQuery
-   * ------------------------------------------------------------------------
-   * add .Tab to jQuery only if jQuery is present
+   * Data API implementation
    */
 
-  defineJQueryPlugin(NAME, Tab);
+  EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
+    if (['A', 'AREA'].includes(this.tagName)) {
+      event.preventDefault();
+    }
+    if (index_js.isDisabled(this)) {
+      return;
+    }
+    Tab.getOrCreateInstance(this).show();
+  });
+
+  /**
+   * Initialize on focus
+   */
+  EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
+    for (const element of SelectorEngine.find(SELECTOR_DATA_TOGGLE_ACTIVE)) {
+      Tab.getOrCreateInstance(element);
+    }
+  });
+  /**
+   * jQuery
+   */
+
+  index_js.defineJQueryPlugin(Tab);
 
   return Tab;
 });
